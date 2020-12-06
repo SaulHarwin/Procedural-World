@@ -1,8 +1,2 @@
 Base path: 'C:/FattyGams/2019.4.4f1/Editor/Data', plugins path 'C:/FattyGams/2019.4.4f1/Editor/Data/PlaybackEngines'
 Cmd: initializeCompiler
-Cmd: preprocess
-  insize=986 outsize=1226 ok=1
-Cmd: preprocess
-  insize=48007 outsize=2558 ok=1
-Cmd: preprocess
-  insize=59807 outsize=3016 ok=1
