@@ -12,17 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90dd337804153fd4eb00ed2d50c6c4bc, type: 3}
   m_Name: Default Terrain Values
   m_EditorClassIdentifier: 
-  resolutionLevels:
-  - resolution: 4
-    visibleChunksDstThreshold: 2
-  - resolution: 8
-    visibleChunksDstThreshold: 4
-  - resolution: 12
-    visibleChunksDstThreshold: 6
-  - resolution: 30
-    visibleChunksDstThreshold: 16
-  - resolution: 60
-    visibleChunksDstThreshold: 24
   gradient:
     serializedVersion: 2
     key0: {r: 0.9811321, g: 0.9257488, b: 0.6525454, a: 1}
@@ -52,9 +41,9 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 5
     m_NumAlphaKeys: 2
-  resolution: 1
+  resolution: 12
   chunkSize: 240
-  maxViewDst: 10000
+  maxViewDst: 2000
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:
