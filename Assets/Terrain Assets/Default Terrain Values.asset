@@ -60,7 +60,7 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   resolution: 0
   chunkSize: 240
-  maxViewDst: 500
+  maxViewDst: 10000
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:
