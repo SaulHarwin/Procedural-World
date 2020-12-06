@@ -36,11 +36,6 @@ public class ChunkLoader : MonoBehaviour {
     }
 
 void UpdateVisibleChunks(float maxViewDst) {
-
-        foreach (var item in terrainChunkDictionary) {
-            Debug.Log(item);
-        }
-
         for ( int i = 0; i < terrainChunksVisibleLastUpdate.Count; i++) {
             terrainChunksVisibleLastUpdate[i].SetVisible(false);
         }
@@ -70,6 +65,8 @@ void UpdateVisibleChunks(float maxViewDst) {
         NoiseData noiseData;
         GameObject terrainClone;
         GameObject meshObject;
+        GameObject a;
+        GameObject b;
         Vector2 position;
         Bounds bounds;
         Bounds boundsInChunks;
@@ -82,8 +79,8 @@ void UpdateVisibleChunks(float maxViewDst) {
             Vector3 positionV3 = new Vector3(position.x, 0, position.y);
             terrainClone = GameObject.Find("Terrain");
             meshObject = Instantiate (terrainClone, positionV3, Quaternion.identity);
+            meshObject.transform.parent = GameObject.Find("Terrain Chunks").transform;
             meshObject.transform.position = positionV3;
-            // meshObject.transform.parent = terrainClone.transform;
             SetVisible(false);
         }
 
