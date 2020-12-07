@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84eb4e64bffef684a8914b0ac89481df, type: 3}
   m_Name: Default Noise Values
   m_EditorClassIdentifier: 
-  seed: 993
+  seed: 4615
   octaves: 8
   amplitude: 300
-  frequency: 0.001
+  frequency: 0.0008
   lacinarity: 2
   persistance: 0.42
   landMassFrequency: 0.0001

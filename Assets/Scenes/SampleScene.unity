@@ -704,7 +704,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkingSpeed: 2
-  runningSpeed: 3
+  runningSpeed: 20
   jumpSpeed: 1.6
   gravity: 4
   playerCamera: {fileID: 19429407}
