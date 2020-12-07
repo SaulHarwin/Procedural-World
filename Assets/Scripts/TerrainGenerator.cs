@@ -25,7 +25,7 @@ public class TerrainGenerator : MonoBehaviour {
     [SerializeField] private VisualizationMode visualizationMode;
     enum VisualizationMode {Shaded, Heat, Moisture}
 
-    public void Start_(int LODIndex) {
+    public void Startup(int LODIndex) {
         int resolution = terrainData.resolutionLevels[LODIndex].resolution;
         // Debug.Log(transform.position);
         mesh = new Mesh();

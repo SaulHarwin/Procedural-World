@@ -17,6 +17,7 @@ public class ChunkLoader : MonoBehaviour {
     int chunksVisibleInViewDst;
     
     Dictionary<Vector2, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
+    Dictionary<Vector2, int> resolutionDictionary = new Dictionary<Vector2, int>(); 
     List<TerrainChunk> terrainChunksVisibleLastUpdate = new List<TerrainChunk>();
 
     void Start() {
@@ -28,7 +29,6 @@ public class ChunkLoader : MonoBehaviour {
 
     void Update() {
         playerPosition = new Vector2(player.position.x, player.position.z);
-
         if ( (playerPositionOld - playerPosition).sqrMagnitude > sqrPlayerMoveThresholdForChunkUpdate) {
             playerPositionOld = playerPosition;
             UpdateVisibleChunks(terrainData.maxViewDst);
@@ -49,12 +49,15 @@ void UpdateVisibleChunks(float maxViewDst) {
                 Vector2 viewedChunkCoord = new Vector2(currentChunkCoordX + xOffset, currentChunkCoordY + yOffset);
 
                 if (terrainChunkDictionary.ContainsKey (viewedChunkCoord)) {
-                    terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk(maxViewDst, terrainData);
+                    int resolution = resolutionDictionary[viewedChunkCoord]; // Resolution = the current resolution the chunk has.
+                    int newResolution = terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk(maxViewDst, terrainData, resolution);
+                    resolutionDictionary[viewedChunkCoord] = newResolution; // Update the value for the chunks resolution.
                     if (terrainChunkDictionary[viewedChunkCoord].isVisible()) {
                         terrainChunksVisibleLastUpdate.Add(terrainChunkDictionary[viewedChunkCoord]);
                     }
                 } else {
-                    terrainChunkDictionary.Add (viewedChunkCoord, new TerrainChunk(viewedChunkCoord, terrainData.chunkSize, terrainData.resolution, terrain, maxViewDst, terrainData));
+                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, terrainData.chunkSize, terrainData.resolution, terrain, maxViewDst, terrainData));
+                    resolutionDictionary.Add(viewedChunkCoord, 0); // Add the chunk's ChunkCoord to the dictionary.
                 }
             }
         }
@@ -84,24 +87,25 @@ void UpdateVisibleChunks(float maxViewDst) {
             SetVisible(false);
         }
 
-        public void UpdateTerrainChunk(float maxViewDst, TerrainData terrainData) {
+        public int UpdateTerrainChunk(float maxViewDst, TerrainData terrainData, int resolution) {
             float playerDstFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(playerPosition));
             float playerChunkDstFromNearestEdge = playerDstFromNearestEdge / terrainData.chunkSize;
             bool visible = playerDstFromNearestEdge <= maxViewDst;
 
-            if (visible) {
-                int LODIndex = 0;
-                for ( int i = 0; i < terrainData.resolutionLevels.Length - 1; i ++) {
-                    if (playerChunkDstFromNearestEdge > terrainData.resolutionLevels[i].visibleChunksDstThreshold) {
-                        LODIndex = i + 1;
-                    } else {
-                        break;
-                    }
-                } 
-                meshObject.GetComponent<TerrainGenerator>().Start_(LODIndex);
-            }
-
+            int LODIndex = 0;
+            
+            for (int i = 0; i < terrainData.resolutionLevels.Length - 1; i ++) {
+                if (playerChunkDstFromNearestEdge > terrainData.resolutionLevels[i].visibleChunksDstThreshold) {
+                    LODIndex = i + 1;
+                } else {
+                    break;
+                }
+            } 
+            if (resolution != terrainData.resolutionLevels[LODIndex].resolution) { // Regenerate the chunks mesh only if the resolution of the chunk has changed.
+                meshObject.GetComponent<TerrainGenerator>().Startup(LODIndex);
+            } 
             SetVisible(visible);
+            return terrainData.resolutionLevels[LODIndex].resolution; // Return the resolution of the chunk.
         }
 
         public void SetVisible(bool visible) {
