@@ -50,7 +50,7 @@ public class TerrainGenerator : MonoBehaviour {
         }
 
         // This is only a prediction and a poor one at that because the heighest value won't be close to the max possible value attainable.
-        float distanceFromZero = ((maxValue) / 4); 
+        float distanceFromZero = ((maxValue) / 8); 
         return distanceFromZero; 
     }
 
@@ -102,7 +102,7 @@ public class TerrainGenerator : MonoBehaviour {
     }
 
     public int[] GenerateTriangles(int resolutionDevisionNum) {
-        triangles = new int[ (terrainData.chunkSize / resolutionDevisionNum) * (terrainData.chunkSize / resolutionDevisionNum) * 6];
+        triangles = new int[(terrainData.chunkSize / resolutionDevisionNum) * (terrainData.chunkSize / resolutionDevisionNum) * 6];
         int vert = 0;
         int tris = 0;
         for (int z = 0; z < terrainData.chunkSize; z += resolutionDevisionNum) {
@@ -148,7 +148,7 @@ public class TerrainGenerator : MonoBehaviour {
         float newX = 1;
 
         // Can't need to work out away of predicting maxHeight value
-        float maxValue = 700f;
+        float maxValue = 800f;
         return maxValue;
     }
     
