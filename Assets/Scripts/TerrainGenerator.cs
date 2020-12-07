@@ -27,7 +27,6 @@ public class TerrainGenerator : MonoBehaviour {
 
     public void Startup(int LODIndex) {
         int resolution = terrainData.resolutionLevels[LODIndex].resolution;
-        // Debug.Log(transform.position);
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
         float maxValue = CalculateMaxAndMinValues();
@@ -39,7 +38,6 @@ public class TerrainGenerator : MonoBehaviour {
     public float GenerateTerrain(float maxValue, int resolution) {
         int resolutionDevisionNum = (resolution ==0)?1:resolution*2;
         Color[] colours;
-        // Texture[] textures;
         Vector3[] vertices = GenerateVertices(resolutionDevisionNum);
         int[] triangles    = GenerateTriangles(resolutionDevisionNum);
         switch (this.visualizationMode) {
@@ -77,7 +75,6 @@ public class TerrainGenerator : MonoBehaviour {
                 for (int o = 1; o <= noiseData.octaves; o++, newSeed += 500, newFrequency *= noiseData.lacinarity, newAmplitude *= noiseData.persistance) {
 
                     if (o == 1) {
-                        // Debug.Log(newSeed);
                         y = Mathf.PerlinNoise(x  * newFrequency + (newSeed - (-offSetX)), z * newFrequency + (newSeed - (-offSetZ)));
                         y = terrainData.meshHeightCurve.Evaluate(y);
                         y = y * newAmplitude;
@@ -126,12 +123,10 @@ public class TerrainGenerator : MonoBehaviour {
 
     public Color[] GenerateColours(Vector3[] vertices, int resolutionDevisionNum, float maxValue, TerrainType[] terrainTypes) {
         colours = new Color[vertices.Length];
-        // textures = new Texture[vertices.Length];
         for (int i = 0, z = 0; z <= terrainData.chunkSize; z += resolutionDevisionNum) {
             for (int x = 0; x <= terrainData.chunkSize; x += resolutionDevisionNum) {
                 float height = Mathf.InverseLerp(0, maxValue, vertices[i].y);
                 TerrainType terrainType = ChooseTerrainType (height, terrainTypes);
-                // colours[i] = terrainType.colour;
                 colours[i] = terrainData.gradient.Evaluate(height);
                 i++;
             }
