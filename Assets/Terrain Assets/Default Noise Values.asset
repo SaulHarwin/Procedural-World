@@ -22,5 +22,5 @@ MonoBehaviour:
   persistance: 0.4
   landMassFrequency: 0.0001
   landMassAmplitude: 600
-  heatMapFrequency: 0.0001
-  moistureMapFrequency: 0.0001
+  heatMapFrequency: 0.00001
+  moistureMapFrequency: 0.00001

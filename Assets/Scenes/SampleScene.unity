@@ -771,7 +771,7 @@ MonoBehaviour:
     colour: {r: 1, g: 0, b: 0, a: 0}
     threshold: 1
     index: 0
-  visualizationMode: 2
+  visualizationMode: 3
   biomes:
   - name: Coldest
     threshold: 0.25
@@ -823,13 +823,13 @@ MonoBehaviour:
       threshold: 0.5
       color: {r: 0.37131512, g: 0.745283, b: 0.24256852, a: 0}
     - name: Wet
-      biomeName: forest
+      biomeName: grassland
       threshold: 0.75
-      color: {r: 0.012962081, g: 0.2264151, b: 0, a: 0}
+      color: {r: 0.37254903, g: 0.74509805, b: 0.24313727, a: 0}
     - name: Wettest
-      biomeName: tropical forest
+      biomeName: forest
       threshold: 1
-      color: {r: 1, g: 0, b: 0.8503313, a: 0}
+      color: {r: 0.011764707, g: 0.227451, b: 0, a: 0}
   - name: Hottest
     threshold: 1
     biomes:
