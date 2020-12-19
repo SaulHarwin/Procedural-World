@@ -66,11 +66,11 @@ public class TerrainGenerator : MonoBehaviour {
                 float normalization = 0;
                 int newSeed = noiseData.seed;
 
-                float offSetX = transform.position.x * noiseData.frequency;
-                float offSetZ = transform.position.z * noiseData.frequency;
+                float offSetX = (transform.position.x * noiseData.frequency) / terrainData.scale;
+                float offSetZ = (transform.position.z * noiseData.frequency) / terrainData.scale;
 
-                float landMassOffSetX = transform.position.x * noiseData.landMassFrequency;
-                float landMassOffSetZ = transform.position.z * noiseData.landMassFrequency;
+                float landMassOffSetX = (transform.position.x * noiseData.landMassFrequency) / terrainData.scale;
+                float landMassOffSetZ = (transform.position.z * noiseData.landMassFrequency) / terrainData.scale;
 
                 for (int o = 1; o <= noiseData.octaves; o++, newSeed += 500, newFrequency *= noiseData.lacinarity, newAmplitude *= noiseData.persistance) {
 
@@ -94,6 +94,7 @@ public class TerrainGenerator : MonoBehaviour {
                 continentValue = continentValue * 2 -1; // Centering around Zero.
                 continentValue = continentValue * noiseData.landMassAmplitude;
                 y += continentValue;
+                
                 vertices[i] = new Vector3(x, y, z);
                 i++;
             }

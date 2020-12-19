@@ -22,7 +22,7 @@ public class ChunkLoader : MonoBehaviour {
 
     void Start() {
         float maxViewDst = terrainData.maxViewDst;
-        chunksVisibleInViewDst = Mathf.RoundToInt(maxViewDst / terrainData.chunkSize);
+        chunksVisibleInViewDst = Mathf.RoundToInt(maxViewDst / (terrainData.chunkSize * terrainData.scale));
         UpdateVisibleChunks(maxViewDst);
         UpdateVisibleChunks(maxViewDst);
     }
@@ -41,8 +41,8 @@ void UpdateVisibleChunks(float maxViewDst) {
         }
         terrainChunksVisibleLastUpdate.Clear();
 
-        int currentChunkCoordX = Mathf.RoundToInt(playerPosition.x / terrainData.chunkSize);
-        int currentChunkCoordY = Mathf.RoundToInt(playerPosition.y / terrainData.chunkSize);
+        int currentChunkCoordX = Mathf.RoundToInt(playerPosition.x / (terrainData.chunkSize * terrainData.scale));
+        int currentChunkCoordY = Mathf.RoundToInt(playerPosition.y / (terrainData.chunkSize * terrainData.scale));
     
         for (int yOffset = -chunksVisibleInViewDst; yOffset <= chunksVisibleInViewDst; yOffset++) {
             for (int xOffset = -chunksVisibleInViewDst; xOffset <= chunksVisibleInViewDst; xOffset++) {
@@ -75,6 +75,7 @@ void UpdateVisibleChunks(float maxViewDst) {
         Bounds boundsInChunks;
 
         public TerrainChunk(Vector2 coord, int size, int resolution, Transform terrain, float maxViewDst, TerrainData terrainData) {
+            size *= terrainData.scale;
             position = coord * size;
             bounds = new Bounds(position,Vector2.one * size);
             float playerDstFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(playerPosition));
@@ -89,7 +90,7 @@ void UpdateVisibleChunks(float maxViewDst) {
 
         public int UpdateTerrainChunk(float maxViewDst, TerrainData terrainData, int resolution) {
             float playerDstFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(playerPosition));
-            float playerChunkDstFromNearestEdge = playerDstFromNearestEdge / terrainData.chunkSize;
+            float playerChunkDstFromNearestEdge = playerDstFromNearestEdge / (terrainData.chunkSize * terrainData.scale);
             bool visible = playerDstFromNearestEdge <= maxViewDst;
 
             int LODIndex = 0;
