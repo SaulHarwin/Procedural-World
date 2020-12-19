@@ -5,6 +5,8 @@ using UnityEngine;
 [CreateAssetMenu()]
 public class NoiseData : ScriptableObject {    
     public int seed;
+    public int seedHeat;
+    public int seedMoisture;
     public int octaves;
 
     public float amplitude = 480f;
@@ -14,4 +16,7 @@ public class NoiseData : ScriptableObject {
     
     public float landMassFrequency = 0.0001f;
     public float landMassAmplitude = 500f;
+
+    public float heatMapFrequency = 0.001f;
+    public float moistureMapFrequency = 0.001f;
 }

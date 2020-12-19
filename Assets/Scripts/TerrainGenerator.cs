@@ -7,9 +7,16 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter))]
 public class TerrainGenerator : MonoBehaviour {
 
+    private Biome[] heatType;
+    private Biome biomeType;
+
     public static Mesh mesh;
+    public Maps maps;
     MeshCollider meshCollider;
-    Vector3[] vertices;
+    Vector3[] heightMap;
+    Vector3[] heatMap;
+    Vector3[] moistureMap;
+    // Vector3[] Maps;
     int[] triangles; 
     Color[] colours;
     Texture[] textures;
@@ -22,8 +29,9 @@ public class TerrainGenerator : MonoBehaviour {
     [SerializeField] private TerrainType[] heightTerrainTypes;
     [SerializeField] private TerrainType[] heatTerrainTypes;
     [SerializeField] private TerrainType[] moistureTerrainTypes;
+    // [SerializeField] private TerrainType[] biomeTerrainTypes;
     [SerializeField] private VisualizationMode visualizationMode;
-    enum VisualizationMode {Shaded, Heat, Moisture}
+    enum VisualizationMode {Shaded, Heat, Moisture, Biomes}
 
     public void Startup(int LODIndex) {
         int resolution = terrainData.resolutionLevels[LODIndex].resolution;
@@ -38,14 +46,20 @@ public class TerrainGenerator : MonoBehaviour {
     public float GenerateTerrain(float maxValue, int resolution) {
         int resolutionDevisionNum = (resolution ==0)?1:resolution*2;
         Color[] colours;
-        Vector3[] vertices = GenerateVertices(resolutionDevisionNum);
-        int[] triangles    = GenerateTriangles(resolutionDevisionNum);
+        Maps maps = GenerateheightMap(resolutionDevisionNum);
+        int[] triangles = GenerateTriangles(resolutionDevisionNum);
         switch (this.visualizationMode) {
             case VisualizationMode.Shaded:
-                colours = GenerateColours(vertices, resolutionDevisionNum, maxValue, this.heightTerrainTypes);
+                colours = GenerateColours(maps.heightMap, resolutionDevisionNum, maxValue, this.heightTerrainTypes);
+                break;
+            case VisualizationMode.Heat:
+                colours = GenerateColours(maps.heatMap, resolutionDevisionNum, maxValue, this.heatTerrainTypes);
                 break;
             case VisualizationMode.Moisture:
-                colours = GenerateColours(vertices, resolutionDevisionNum, maxValue, this.moistureTerrainTypes);
+                colours = GenerateColours(maps.moistureMap, resolutionDevisionNum, maxValue, this.moistureTerrainTypes);
+                break;
+            case VisualizationMode.Biomes:
+                colours = GenerateBiomes(maps.heatMap, maps.moistureMap, resolutionDevisionNum, maxValue, this.biomes);
                 break;
         }
 
@@ -54,9 +68,12 @@ public class TerrainGenerator : MonoBehaviour {
         return distanceFromZero; 
     }
 
-    public Vector3[] GenerateVertices(int resolutionDevisionNum) {
-        vertices = new Vector3[((terrainData.chunkSize / resolutionDevisionNum)+1) * ((terrainData.chunkSize / resolutionDevisionNum)+1)];
-        float y = 1;
+    public Maps GenerateheightMap(int resolutionDevisionNum) {
+        heightMap = new Vector3[((terrainData.chunkSize / resolutionDevisionNum)+1) * ((terrainData.chunkSize / resolutionDevisionNum)+1)];
+        heatMap = new Vector3[((terrainData.chunkSize / resolutionDevisionNum)+1) * ((terrainData.chunkSize / resolutionDevisionNum)+1)];
+        moistureMap = new Vector3[((terrainData.chunkSize / resolutionDevisionNum)+1) * ((terrainData.chunkSize / resolutionDevisionNum)+1)];
+
+        float heightMapValue = 1;
 
         for (int i = 0, z = 0; z <= terrainData.chunkSize; z += resolutionDevisionNum) {
             for (int x = 0; x <= terrainData.chunkSize; x += resolutionDevisionNum) {
@@ -72,20 +89,26 @@ public class TerrainGenerator : MonoBehaviour {
                 float landMassOffSetX = (transform.position.x * noiseData.landMassFrequency) / terrainData.scale;
                 float landMassOffSetZ = (transform.position.z * noiseData.landMassFrequency) / terrainData.scale;
 
+                float heatMapOffSetX = (transform.position.x * noiseData.heatMapFrequency) / terrainData.scale;
+                float heatMapOffSetZ = (transform.position.z * noiseData.heatMapFrequency) / terrainData.scale;
+
+                float moistureMapOffSetX = (transform.position.x * noiseData.moistureMapFrequency) / terrainData.scale;
+                float moistureMapOffSetZ = (transform.position.z * noiseData.moistureMapFrequency) / terrainData.scale;
+
                 for (int o = 1; o <= noiseData.octaves; o++, newSeed += 500, newFrequency *= noiseData.lacinarity, newAmplitude *= noiseData.persistance) {
 
                     if (o == 1) {
-                        y = Mathf.PerlinNoise(x  * newFrequency + (newSeed - (-offSetX)), z * newFrequency + (newSeed - (-offSetZ)));
-                        y = terrainData.meshHeightCurve.Evaluate(y);
-                        y = y * newAmplitude;
+                        heightMapValue = Mathf.PerlinNoise(x  * newFrequency + (newSeed - (-offSetX)), z * newFrequency + (newSeed - (-offSetZ)));
+                        heightMapValue = terrainData.meshHeightCurve.Evaluate(heightMapValue);
+                        heightMapValue = heightMapValue * newAmplitude;
                     }
                     else {
                         offSetX *= noiseData.lacinarity;
                         offSetZ *= noiseData.lacinarity;
-                        float newY = Mathf.PerlinNoise(x * newFrequency + (newSeed - (-offSetX)), z * newFrequency + (newSeed - (-offSetZ)));
-                        newY = terrainData.meshHeightCurve.Evaluate(newY);
-                        newY = newY * newAmplitude;
-                        y += newY;
+                        float newHeightMapValue = Mathf.PerlinNoise(x * newFrequency + (newSeed - (-offSetX)), z * newFrequency + (newSeed - (-offSetZ)));
+                        newHeightMapValue = terrainData.meshHeightCurve.Evaluate(newHeightMapValue);
+                        newHeightMapValue = newHeightMapValue * newAmplitude;
+                        heightMapValue += newHeightMapValue;
                     }
                 };
                 // Continent Script 
@@ -93,13 +116,25 @@ public class TerrainGenerator : MonoBehaviour {
                 continentValue = terrainData.landMassHeightCurve.Evaluate(continentValue);
                 continentValue = continentValue * 2 -1; // Centering around Zero.
                 continentValue = continentValue * noiseData.landMassAmplitude;
-                y += continentValue;
+                heightMapValue += continentValue;
                 
-                vertices[i] = new Vector3(x, y, z);
+                heightMap[i] = new Vector3(x, heightMapValue, z);
+                
+                // HeatMap Generation
+                float heatMapValue = Mathf.PerlinNoise(x * noiseData.heatMapFrequency + (noiseData.seedHeat - (-heatMapOffSetX)), z * noiseData.heatMapFrequency + (noiseData.seedHeat - (-heatMapOffSetZ)));
+                heatMap[i] = new Vector3(x, heatMapValue, z);
+            
+                // MoistureMap Generation
+                float moistureMapValue = Mathf.PerlinNoise(x * noiseData.moistureMapFrequency + (noiseData.seedMoisture - (-moistureMapOffSetX)), z * noiseData.moistureMapFrequency + (noiseData.seedMoisture - (-moistureMapOffSetZ)));
+                moistureMap[i] = new Vector3(x, moistureMapValue, z);
+
                 i++;
             }
         };
-        return vertices;
+        maps.heightMap = heightMap;
+        maps.heatMap = heatMap;
+        maps.moistureMap = moistureMap;
+        return maps;
     }
 
     public int[] GenerateTriangles(int resolutionDevisionNum) {
@@ -122,19 +157,55 @@ public class TerrainGenerator : MonoBehaviour {
         return triangles;
     }
 
-    public Color[] GenerateColours(Vector3[] vertices, int resolutionDevisionNum, float maxValue, TerrainType[] terrainTypes) {
-        colours = new Color[vertices.Length];
+    public Color[] GenerateColours(Vector3[] map, int resolutionDevisionNum, float maxValue, TerrainType[] terrainTypes) {
+        colours = new Color[map.Length];
+        float height;
         for (int i = 0, z = 0; z <= terrainData.chunkSize; z += resolutionDevisionNum) {
             for (int x = 0; x <= terrainData.chunkSize; x += resolutionDevisionNum) {
-                float height = Mathf.InverseLerp(0, maxValue, vertices[i].y);
+                if (this.visualizationMode == VisualizationMode.Shaded) {
+                    height = Mathf.InverseLerp(0, maxValue, map[i].y);
+                } else {
+                    height = Mathf.InverseLerp(0, 1, map[i].y); 
+                }
                 TerrainType terrainType = ChooseTerrainType (height, terrainTypes);
-                colours[i] = terrainData.gradient.Evaluate(height);
+                colours[i] = terrainType.colour;
                 i++;
             }
         };
         return colours;
     }
 	
+    public Color[] GenerateBiomes(Vector3[] heatMap, Vector3[] moistureMap,int resolutionDevisionNum,  float maxValue, BiomeRow[] biomes) {
+        colours = new Color[heatMap.Length];
+        for (int i = 0, z = 0; z <= terrainData.chunkSize; z += resolutionDevisionNum) {
+            for (int x = 0; x <= terrainData.chunkSize; x += resolutionDevisionNum) {
+                float heat = Mathf.InverseLerp(0, 1, heatMap[i].y);
+                float moisture = Mathf.InverseLerp(0, 1, moistureMap[i].y);  
+                // BiomeRow[] heatType = ChooseBiomeType (heat, biomes);
+                // Biome biomeType = ChooseBiomeType (moisture, heatType);
+                foreach (BiomeRow biomeRow in biomes) {
+                    if (heat < biomeRow.threshold) {   
+                        heatType = biomeRow.biomes;
+                        break;
+                    } else {
+                        heatType = biomes [biomes.Length - 1].biomes;
+                    }
+                }
+                foreach (Biome biome in heatType) {
+                    if (moisture < biome.threshold) {   
+                        biomeType = biome;
+                        break;
+                    } else {
+                        heatType = biomes [biomes.Length - 1].biomes;
+                    }
+                }
+                colours[i] = biomeType.color;
+                i++;
+            }
+        }
+        return colours;
+    } 
+
     TerrainType ChooseTerrainType(float height, TerrainType[] terrainTypes) {
         foreach (TerrainType terrainType in terrainTypes) {
             if (height < terrainType.threshold) {
@@ -143,6 +214,15 @@ public class TerrainGenerator : MonoBehaviour {
         }
         return terrainTypes [terrainTypes.Length - 1];
     }
+
+    // BiomeRow[] ChooseBiomeType(float y, BiomeRow[] BiomeTypes) {
+    //     foreach (BiomeRow biomeRow in BiomeTypes) {
+    //         if (y < biomeRow.threshold) {
+    //             return biomeRow;
+    //         }
+    //     }
+    //     return BiomeTypes [BiomeTypes.Length - 1];
+    // }
 
     float CalculateMaxAndMinValues() {
         float x = 1;
@@ -154,7 +234,7 @@ public class TerrainGenerator : MonoBehaviour {
     }
     
     Vector3[] CalculateNormals() {
-        Vector3[] vertexNormals = new Vector3[vertices.Length];
+        Vector3[] vertexNormals = new Vector3[heightMap.Length];
         int triangleCount = triangles.Length / 3;
         
         for (int i = 0; i < triangleCount; i++) {
@@ -178,9 +258,9 @@ public class TerrainGenerator : MonoBehaviour {
 
 
     Vector3 SurfaceNormalFromIndices(int indexA, int indexB, int indexC) {
-        Vector3 pointA = vertices [indexA];
-        Vector3 pointB = vertices [indexB];
-        Vector3 pointC = vertices [indexC];
+        Vector3 pointA = heightMap [indexA];
+        Vector3 pointB = heightMap [indexB];
+        Vector3 pointC = heightMap [indexC];
 
         // To Calculate the surface normal from these point I will use the cross product.
         
@@ -192,20 +272,42 @@ public class TerrainGenerator : MonoBehaviour {
 
     void UpdateMesh() {
         mesh.Clear();
-        mesh.vertices = vertices;
+        mesh.vertices = heightMap;
         mesh.triangles = triangles;
         mesh.colors = colours;
         // mesh.normals = CalculateNormals(); 
         mesh.RecalculateNormals();
         GetComponent<MeshCollider>().sharedMesh = mesh;
     }
+
+    public struct Maps {
+        public Vector3[] heightMap;
+        public Vector3[] heatMap;
+        public Vector3[] moistureMap;
+    }
+    [SerializeField]
+	private BiomeRow[] biomes;
 }
 
 [System.Serializable]
 public class TerrainType {
 	public string name;
 	public Color colour;
-    public Texture texture;
 	public float threshold;
 	public int index;
+}
+
+[System.Serializable]
+public class Biome {
+    public string name;
+    public string biomeName;
+    public float threshold; 
+    public Color color;
+}
+
+[System.Serializable]
+public class BiomeRow {
+    public string name;
+    public float threshold; 
+    public Biome[] biomes;
 }

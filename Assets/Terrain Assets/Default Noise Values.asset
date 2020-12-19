@@ -13,10 +13,14 @@ MonoBehaviour:
   m_Name: Default Noise Values
   m_EditorClassIdentifier: 
   seed: 993
-  octaves: 1
+  seedHeat: 10144
+  seedMoisture: 451
+  octaves: 8
   amplitude: 300
   frequency: 0.001
   lacinarity: 2
-  persistance: 0.42
+  persistance: 0.4
   landMassFrequency: 0.0001
   landMassAmplitude: 600
+  heatMapFrequency: 0.0001
+  moistureMapFrequency: 0.0001
