@@ -21,7 +21,7 @@ MonoBehaviour:
   m_ShowMode: 4
   m_Title: 
   m_RootView: {fileID: 2}
-  m_MinSize: {x: 875, y: 300}
+  m_MinSize: {x: 875, y: 442}
   m_MaxSize: {x: 10000, y: 10000}
   m_Maximized: 1
 --- !u!114 &2
@@ -46,7 +46,7 @@ MonoBehaviour:
     y: 0
     width: 1920
     height: 1007
-  m_MinSize: {x: 875, y: 300}
+  m_MinSize: {x: 875, y: 442}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &3
 MonoBehaviour:
@@ -114,7 +114,7 @@ MonoBehaviour:
   m_MinSize: {x: 709, y: 392}
   m_MaxSize: {x: 18004, y: 14042}
   vertical: 1
-  controlID: 66
+  controlID: 82
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -140,7 +140,7 @@ MonoBehaviour:
   m_MinSize: {x: 709, y: 392}
   m_MaxSize: {x: 18004, y: 14042}
   vertical: 0
-  controlID: 67
+  controlID: 83
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -191,7 +191,7 @@ MonoBehaviour:
   m_MinSize: {x: 232, y: 392}
   m_MaxSize: {x: 10002, y: 14042}
   vertical: 1
-  controlID: 68
+  controlID: 84
 --- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -396,9 +396,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 9c3c0000
-      m_LastClickedID: 15516
-      m_ExpandedIDs: 3cfbffff
+      m_SelectedIDs: 
+      m_LastClickedID: 0
+      m_ExpandedIDs: 3efbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -538,9 +538,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -34272.92, y: 49627.508, z: 42041.74}
+    m_Target: {x: -279.813, y: -1644.3096, z: -1250.8184}
     speed: 2
-    m_Value: {x: -34272.92, y: 49627.508, z: 42041.74}
+    m_Value: {x: -279.813, y: -1644.3096, z: -1250.8184}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -588,11 +588,11 @@ MonoBehaviour:
   m_Rotation:
     m_Target: {x: -0.40950835, y: 0.12629808, z: -0.057756845, w: -0.90188384}
     speed: 2
-    m_Value: {x: -0.40943083, y: 0.12627418, z: -0.057745915, w: -0.90171313}
+    m_Value: {x: -0.40950835, y: 0.12629808, z: -0.057756845, w: -0.90188384}
   m_Size:
-    m_Target: 11434.393
+    m_Target: 2338.4
     speed: 2
-    m_Value: 11434.393
+    m_Value: 2338.4
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -662,14 +662,14 @@ MonoBehaviour:
   m_LastFolders:
   - Assets/Scripts
   m_LastFoldersGridSize: 74
-  m_LastProjectPath: C:\Users\saulh\Documents\Projects\Procedural-World
+  m_LastProjectPath: C:\Users\saulh\Desktop\Procedural-World
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 1c3d0000
-    m_LastClickedID: 15644
-    m_ExpandedIDs: 00000000f03c0000f23c00001a3d0000
+    m_SelectedIDs: f43c0000
+    m_LastClickedID: 15604
+    m_ExpandedIDs: 00000000ec3c0000ee3c0000f23c0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -697,7 +697,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000f03c0000f23c0000
+    m_ExpandedIDs: 00000000ec3c0000ee3c0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
