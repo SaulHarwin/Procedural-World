@@ -705,10 +705,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9c478c0de1e3f14cae8c3cca13b87d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 10
-  regionSize: {x: 1000, y: 1000}
-  rejectionSamples: 2
-  displayRadius: 5
 --- !u!64 &1480744940
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -735,6 +731,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb7184da68d2e04bba8cce5bde3833f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  radius: 5
+  regionSize: {x: 240, y: 240}
+  rejectionSamples: 2
+  displayRadius: 1
   noiseData: {fileID: 11400000, guid: 01e2b8d2ad757ce45ac47f6977014b53, type: 2}
   terrainData: {fileID: 11400000, guid: 4cedd16cddfc2774c9106d0e7d8b47f8, type: 2}
   heightTerrainTypes:
@@ -922,7 +922,7 @@ Transform:
   m_GameObject: {fileID: 1480744938}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 4, y: 4, z: 4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4

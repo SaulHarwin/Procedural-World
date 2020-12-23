@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class PoissonDiscSampling {
-
+public static class TreeGeneration {
 	public static List<Vector2> GeneratePoints(float radius, Vector2 sampleRegionSize, int numSamplesBeforeRejection = 30) {
 		float cellSize = radius/Mathf.Sqrt(2);
 
@@ -33,9 +32,8 @@ public static class PoissonDiscSampling {
 			if (!candidateAccepted) {
 				spawnPoints.RemoveAt(spawnIndex);
 			}
-
 		}
-
+		// points.Add(new Vector2(4f, 1f));
 		return points;
 	}
 
