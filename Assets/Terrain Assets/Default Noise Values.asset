@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84eb4e64bffef684a8914b0ac89481df, type: 3}
   m_Name: Default Noise Values
   m_EditorClassIdentifier: 
-  seed: 993
+  seed: 1497
   seedHeat: 10144
   seedMoisture: 451
   octaves: 8

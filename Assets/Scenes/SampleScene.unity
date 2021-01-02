@@ -347,6 +347,7 @@ MonoBehaviour:
   terrain: {fileID: 0}
   terrainData: {fileID: 0}
   noiseData: {fileID: 0}
+  countTag: 0
 --- !u!1 &630854905
 GameObject:
   m_ObjectHideFlags: 0
@@ -528,7 +529,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1315441750
 GameObject:
@@ -622,56 +623,13 @@ RectTransform:
   m_Children:
   - {fileID: 1132735828}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!1 &1393733265
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1393733267}
-  - component: {fileID: 1393733266}
-  m_Layer: 0
-  m_Name: Map
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1393733266
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1393733265}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87cf270acc6a351408eef5b5e08eef76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &1393733267
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1393733265}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1480744938
 GameObject:
   m_ObjectHideFlags: 0
@@ -731,10 +689,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb7184da68d2e04bba8cce5bde3833f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 5
+  radius: 10
   regionSize: {x: 240, y: 240}
-  rejectionSamples: 2
-  displayRadius: 1
+  rejectionSamples: 4
+  displayRadius: 5
   noiseData: {fileID: 11400000, guid: 01e2b8d2ad757ce45ac47f6977014b53, type: 2}
   terrainData: {fileID: 11400000, guid: 4cedd16cddfc2774c9106d0e7d8b47f8, type: 2}
   heightTerrainTypes:
@@ -922,10 +880,10 @@ Transform:
   m_GameObject: {fileID: 1480744938}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1685546534
 GameObject:
@@ -992,7 +950,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1685546534}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 79, z: 0}
+  m_LocalPosition: {x: 0, y: 80, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 630854906}
@@ -1016,6 +974,7 @@ MonoBehaviour:
   terrain: {fileID: 1480744944}
   terrainData: {fileID: 11400000, guid: 4cedd16cddfc2774c9106d0e7d8b47f8, type: 2}
   noiseData: {fileID: 11400000, guid: 01e2b8d2ad757ce45ac47f6977014b53, type: 2}
+  countTag: 0
 --- !u!1 &2059407328
 GameObject:
   m_ObjectHideFlags: 0
@@ -1172,5 +1131,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

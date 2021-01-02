@@ -41,7 +41,7 @@ public class TerrainGenerator : MonoBehaviour {
     [SerializeField] private VisualizationMode visualizationMode;
     enum VisualizationMode {Shaded, Heat, Moisture, Biomes}
 
-    public void Startup(int LODIndex) {
+    public void Startup(int LODIndex, string chunkName) {
         int resolution = terrainData.resolutionLevels[LODIndex].resolution;
         int resolutionDevisionNum = (resolution ==0)?1:resolution*2;
         mesh = new Mesh();
@@ -53,107 +53,85 @@ public class TerrainGenerator : MonoBehaviour {
 
         points = TreeGeneration.GeneratePoints(radius, regionSize, rejectionSamples);
 
-        // Gizmos.DrawWireCube(regionSize/2,regionSize);
 		if (points != null) {
-            foreach (Vector2 point in points) {
-				// Gizmos.DrawSphere(point, displayRadius);
+            foreach (Vector2 point_ in points) {
                 GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                // cube.transform.position = new Vector3(positionV3.x, 0, positionV3.y);
+                cube.transform.parent = transform;
                 cube.transform.localScale = new Vector3(displayRadius, displayRadius, displayRadius);
-                float height = 999999999;
-                float height1 = 0;
-                float height2 = 0;
-                for (int i = 0; i < heightMap.Length; i ++) {
-                    height = 999999999;
-                    height1 = 0;
-                    height2 = 0;
-                    // Debug.Log(heightMap[3720]);
-                    int incrementY = (terrainData.chunkSize) / resolutionDevisionNum + 1;
-                    int incrementX = 1;
-                    // Debug.Log("-");
-                    // Debug.Log(incrementX);
-                    // Debug.Log(incrementY);
-                    // Debug.Log("\n");
-                    // if ( i+incrementY > (terrainData.chunkSize*terrainData.chunkSize) / (resolutionDevisionNum*resolutionDevisionNum)) {
-                    //     incrementY = -incrementY; 
-                    // }
-                    // if ( i+incrementX > (terrainData.chunkSize*terrainData.chunkSize) / (resolutionDevisionNum*resolutionDevisionNum)) {
-                    //     incrementX = -incrementX; 
-                    // }
-                    if (point[0] == heightMap[i][0]) {
-                        if (point[1] == heightMap[i][2]) {
-                            // Debug.Log(heightMap[i][2]);
-                            // Debug.Log(heightMap[i+incrementY][2]);
-                            height = heightMap[i][1]; 
-                            // Debug.Log(i);
-                            // Debug.Log(height);
-                            break;
-                        } 
-                        // else {
-                        //     if (point[1] >= heightMap[i][2] && point[1] <= heightMap[i+incrementY][2]) {
-                        //         // X == point[0]
-                        //         // Y Middle of...
-                        //         // Debug.Log(heightMap[i+terrainData.chunkSize+4]);
-                        //         Debug.Log("1");
-                        //         break;
-                        //     }
-                        // }
+                
+                // Point of object.
+                Vector3 p = new Vector3(point_.x, 0, point_.y);
+                Vector3 i = new Vector3(300,300,300); 
+                Vector3 j = new Vector3(300,300,300);
+                Vector3 k = new Vector3(300,300,300); 
+                float dst1 = 300;
+                float dst2 = 300;
+                float dst3 = 300;
+
+                float newDst;
+                foreach (Vector3 point in heightMap) {
+                    newDst = Vector2.Distance(new Vector2(p.x, p.z), new Vector2(point.x, point.z));
+                    newDst *= newDst;
+                    if (newDst < dst1) {
+                        dst1 = newDst;
+                        i = point;
                     }
-                    // if (point[1] == heightMap[i][2]) {
-                    //     if (point[0] == heightMap[i][0]) {
-                    //         height = heightMap[i][1];
-                    //         Debug.Log("2");
-                    //         break;
-                    //     } 
-                    // }
-                        // else {
-                    //         if (point[0] >= heightMap[i][0] && point[0] <= heightMap[i+incrementX][0]) {
-                    //             // X Middle of...
-                    //             // Y == point[1]
-                    //             height = (heightMap[i][1] + heightMap[i+incrementX][1]) / ((heightMap[i][0]+heightMap[i+incrementX][0]) / point[0]);
-                    //             Debug.Log("3");
-                    //             break;
-                    //         }
-                    //     }
-                // if (height == 999999999) {
-                //     for (int n = 0; n < heightMap.Length; n ++) {
-                    if (point[0] == heightMap[i][0]) {
-                        // Debug.Log(heightMap[i]);
-                        // Debug.Log(heightMap[i+incrementY]);
-                        // Debug.Log(point);
-                        if (point[1] > heightMap[i][2] && point[1] < heightMap[i+incrementY][2]) {
-                            height = (heightMap[i][1] + heightMap[i+incrementY][1]) / ((heightMap[i][2]+heightMap[i+incrementY][2]) / point[1]);
-                            break;
+                }
+                foreach (Vector3 point in heightMap) {
+                    if (point != i) {
+                        newDst = Vector2.Distance(new Vector2(p.x, p.z), new Vector2(point.x, point.z));
+                        newDst *= newDst;
+                        if (newDst >= dst1 && newDst < dst2) {
+                            dst2 = newDst;
+                            j = point;
                         }
                     }
-                    if (point[1] == heightMap[i][2]) {
-                        if (point[0] > heightMap[i][0] && point[0] < heightMap[i+incrementX][0]) {
-                            height = (heightMap[i][1] + heightMap[i+incrementX][1]) / ((heightMap[i][0]+heightMap[i+incrementX][0]) / point[0]);
-                            break;
+                }
+                foreach (Vector3 point in heightMap) {
+                    if (point != i && point != j) {
+                        newDst = Vector2.Distance(new Vector2(p.x, p.z), new Vector2(point.x, point.z));
+                        newDst *= newDst;
+                        if (newDst >= dst2 && newDst < dst3) {
+                            dst3 = newDst;
+                            k = point;
                         }
                     }
-                //     }
-                // } 
-                // if (height == 999999999) {
-                //     for (int m = 0; m < heightMap.Length; m ++) {
-                    if (point[0] > heightMap[i][0] && point[0] < heightMap[i+incrementX][0]) {
-                        // Debug.Log("4");
-                        if (point[1] > heightMap[i][2] && point[1] < heightMap[i+incrementY][2]) {
-                            // XDiv ((heightMap[i][0]+heightMapi+incrementY][2]) / point[1])
-                            height1 = (heightMap[i][1] + heightMap[i+incrementX][1]) / ((heightMap[i][0]+heightMap[i+incrementX][0]) / point[0]);
-                            height2 = (heightMap[i+incrementY][1] + heightMap[i+incrementX+incrementY][1]) / ((heightMap[i+incrementY][0]+heightMap[i+incrementX+incrementY][0]) / point[0]);
-                            // Debug.Log(height1);
-                            // Debug.Log(height2);
-                            height = (height1 + height2)/ ((heightMap[i][2]+heightMap[i+incrementY][2]) / point[1]);
-                            break;
-                        }
-                    }
-                //     }
-                // }
-            }
-            // Debug.Log(height);
-            cube.transform.Translate(point[0], height-distanceFromZero, point[1]);
+                }
+                
+                p = FindY(i, j, k, p);
+                cube.transform.Translate(transform.position + p * terrainData.scale);
 			}
 		}
+    }
+
+    public Vector3 FindY(Vector3 i, Vector3 j, Vector3 k, Vector3 p) {
+        Vector3 L1 = j - i;
+        Vector3 L2 = k - j;
+        float m;
+        float n; 
+        if ( L1.x == 0f) { // if l1.x == 0 
+            n = (p.x - i.x) / L2.x;
+            m = (p.z - i.z - n*(L2.z)) / L1.z;
+        }
+        else if ( L2.x == 0f) { // if l2.x == 0
+            m = (p.x - i.x) / L1.x;
+            n = (p.z - i.z - m*(L1.z)) / L2.z; 
+        }
+        else if ( L1.z == 0f) {
+            n = (p.z - i.z) / L2.z;
+            m = (p.x - i.x - n*(L2.x)) / L1.x;
+        }
+        else if (L2.z == 0f) {
+            m = (p.z - i.z) / L1.z;
+            n = (p.x - i.x - m*(L1.x)) / L2.x;
+        }
+        else { // l1.x, l2.x, l1.z, 12.z != 0
+            n = (p.x * L1.z - p.z * L1.x + i.z * L1.x - i.x * L1.z) / (L1.z * L2.x - L1.x * L2.z);
+            m = (p.x - i.x - n*(L2.x)) / L1.x;
+        }
+        // Debug.Log(i + m*(L1) + n*(L2));
+        return i + m*(L1) + n*(L2); // Vector of p minus the distance from zero. 
     }
 
     public float GenerateTerrain(float maxValue, int resolutionDevisionNum) {

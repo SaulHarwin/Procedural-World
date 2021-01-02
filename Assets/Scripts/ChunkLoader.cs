@@ -11,6 +11,7 @@ public class ChunkLoader : MonoBehaviour {
 
     const float playerMoveThresholdForChunkUpdate = 25f;
     const float sqrPlayerMoveThresholdForChunkUpdate = playerMoveThresholdForChunkUpdate * playerMoveThresholdForChunkUpdate; 
+    public int countTag; 
 
     public static Vector2 playerPosition;
     Vector2 playerPositionOld;
@@ -50,15 +51,16 @@ void UpdateVisibleChunks(float maxViewDst) {
 
                 if (terrainChunkDictionary.ContainsKey (viewedChunkCoord)) {
                     int resolution = resolutionDictionary[viewedChunkCoord]; // Resolution = the current resolution the chunk has.
-                    int newResolution = terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk(maxViewDst, terrainData, resolution);
+                    int newResolution = terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk(terrainData.chunkSize, maxViewDst, terrainData, resolution);
                     resolutionDictionary[viewedChunkCoord] = newResolution; // Update the value for the chunks resolution.
                     if (terrainChunkDictionary[viewedChunkCoord].isVisible()) {
                         terrainChunksVisibleLastUpdate.Add(terrainChunkDictionary[viewedChunkCoord]);
                     }
                 } else {
-                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, terrainData.chunkSize, terrainData.resolution, terrain, maxViewDst, terrainData));
+                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, terrainData.chunkSize, terrainData.resolution, terrain, maxViewDst, terrainData, countTag));
                     resolutionDictionary.Add(viewedChunkCoord, 0); // Add the chunk's ChunkCoord to the dictionary.
                 }
+                countTag += 1;
             }
         }
     }
@@ -74,7 +76,7 @@ void UpdateVisibleChunks(float maxViewDst) {
         Bounds bounds;
         Bounds boundsInChunks;
 
-        public TerrainChunk(Vector2 coord, int size, int resolution, Transform terrain, float maxViewDst, TerrainData terrainData) {
+        public TerrainChunk(Vector2 coord, int size, int resolution, Transform terrain, float maxViewDst, TerrainData terrainData, int countTag) {
             size *= terrainData.scale;
             position = coord * size;
             bounds = new Bounds(position,Vector2.one * size);
@@ -85,10 +87,11 @@ void UpdateVisibleChunks(float maxViewDst) {
             meshObject = Instantiate (terrainClone, positionV3, Quaternion.identity);
             meshObject.transform.parent = GameObject.Find("Terrain Chunks").transform;
             meshObject.transform.position = positionV3;
+            meshObject.name = "Chunk" + countTag.ToString();
             SetVisible(false);
         }
 
-        public int UpdateTerrainChunk(float maxViewDst, TerrainData terrainData, int resolution) {
+        public int UpdateTerrainChunk(int size, float maxViewDst, TerrainData terrainData, int resolution) {
             float playerDstFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(playerPosition));
             float playerChunkDstFromNearestEdge = playerDstFromNearestEdge / (terrainData.chunkSize * terrainData.scale);
             bool visible = playerDstFromNearestEdge <= maxViewDst;
@@ -103,7 +106,7 @@ void UpdateVisibleChunks(float maxViewDst) {
                 }
             } 
             if (resolution != terrainData.resolutionLevels[LODIndex].resolution) { // Regenerate the chunks mesh only if the resolution of the chunk has changed.
-                meshObject.GetComponent<TerrainGenerator>().Startup(LODIndex);
+                meshObject.GetComponent<TerrainGenerator>().Startup(LODIndex, meshObject.name);
             } 
             SetVisible(visible);
             return terrainData.resolutionLevels[LODIndex].resolution; // Return the resolution of the chunk.
