@@ -370,10 +370,6 @@ public class TerrainGenerator : MonoBehaviour {
         GetComponent<MeshCollider>().sharedMesh = mesh;
     }
 
-	void OnValidate() {
-		// points = TreeGeneration.GeneratePoints(radius, regionSize, rejectionSamples);
-	}
-
 	// void OnDrawGizmos() {
 	// 	Gizmos.DrawWireCube(regionSize/2,regionSize);
 	// 	if (points != null) {
@@ -390,11 +386,11 @@ public class TerrainGenerator : MonoBehaviour {
 	// 		}
 	// 	}
 	// }
-    void OnDrawGizmos() {
-        for (int i = 0; i >= heightMap.Length; i++) {
-            Gizmos.DrawSphere(heightMap[i], 0.5f);
-        }
-    }
+    // void OnDrawGizmos() {
+    //     for (int i = 0; i >= heightMap.Length; i++) {
+    //         Gizmos.DrawSphere(heightMap[i], 0.5f);
+    //     }
+    // }
 
     public struct Maps {
         public Vector3[] heightMap;

@@ -689,10 +689,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb7184da68d2e04bba8cce5bde3833f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 10
+  radius: 100
   regionSize: {x: 240, y: 240}
   rejectionSamples: 4
-  displayRadius: 5
+  displayRadius: 50
   noiseData: {fileID: 11400000, guid: 01e2b8d2ad757ce45ac47f6977014b53, type: 2}
   terrainData: {fileID: 11400000, guid: 4cedd16cddfc2774c9106d0e7d8b47f8, type: 2}
   heightTerrainTypes:
@@ -746,7 +746,7 @@ MonoBehaviour:
     colour: {r: 1, g: 0, b: 0, a: 0}
     threshold: 1
     index: 0
-  visualizationMode: 3
+  visualizationMode: 0
   biomes:
   - name: Coldest
     threshold: 0.25
