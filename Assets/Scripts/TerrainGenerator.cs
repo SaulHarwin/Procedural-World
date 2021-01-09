@@ -52,9 +52,9 @@ public class TerrainGenerator : MonoBehaviour {
         UpdateMesh();
 
         points = TreeGeneration.GeneratePoints(radius, regionSize, rejectionSamples);
-        FindNearestPoints(points);
+        FindNearestPoints(points, maxValue);
     }
-    public void FindNearestPoints(List<Vector2> points) {
+    public void FindNearestPoints(List<Vector2> points, float maxValue) {
         if (points != null) {
             foreach (Vector2 point_ in points) {
                 
@@ -98,13 +98,14 @@ public class TerrainGenerator : MonoBehaviour {
                 }
                 float treeDensity = FindBiome(i, heatMap, moistureMap, biomes);
                 float x = UnityEngine.Random.Range(0f,1f);
-                Debug.Log(x);
                 if (x < treeDensity) {
                     p = FindY(i, j, k, p);
-                    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    cube.transform.parent = transform;
-                    cube.transform.localScale = new Vector3(displayRadius, displayRadius, displayRadius);
-                    cube.transform.Translate(transform.position + p * terrainData.scale);
+                    if (p.y > 0 + maxValue / 4) { // If the tree will be under water then don't place it.  
+                        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                        cube.transform.parent = transform;
+                        cube.transform.localScale = new Vector3(displayRadius, displayRadius, displayRadius);
+                        cube.transform.Translate(transform.position + p * terrainData.scale);
+                    }
                 }
             }
         }
