@@ -15,8 +15,8 @@ public class TerrainGenerator : MonoBehaviour {
 	List<Vector2> points;
 
 
-    private Biome[] heatType;
-    private Biome biomeType;
+    public Biome[] heatType;
+    public Biome biomeType;
 
     public static Mesh mesh;
     public Maps maps;
@@ -52,13 +52,11 @@ public class TerrainGenerator : MonoBehaviour {
         UpdateMesh();
 
         points = TreeGeneration.GeneratePoints(radius, regionSize, rejectionSamples);
-
-		if (points != null) {
+        FindNearestPoints(points);
+    }
+    public void FindNearestPoints(List<Vector2> points) {
+        if (points != null) {
             foreach (Vector2 point_ in points) {
-                GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                // cube.transform.position = new Vector3(positionV3.x, 0, positionV3.y);
-                cube.transform.parent = transform;
-                cube.transform.localScale = new Vector3(displayRadius, displayRadius, displayRadius);
                 
                 // Point of object.
                 Vector3 p = new Vector3(point_.x, 0, point_.y);
@@ -98,11 +96,52 @@ public class TerrainGenerator : MonoBehaviour {
                         }
                     }
                 }
-                
-                p = FindY(i, j, k, p);
-                cube.transform.Translate(transform.position + p * terrainData.scale);
-			}
-		}
+                float treeDensity = FindBiome(i, heatMap, moistureMap, biomes);
+                float x = UnityEngine.Random.Range(0f,1f);
+                Debug.Log(x);
+                if (x < treeDensity) {
+                    p = FindY(i, j, k, p);
+                    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    cube.transform.parent = transform;
+                    cube.transform.localScale = new Vector3(displayRadius, displayRadius, displayRadius);
+                    cube.transform.Translate(transform.position + p * terrainData.scale);
+                }
+            }
+        }
+    }
+
+    public float FindBiome(Vector3 point, Vector3[] heatMap, Vector3[] moistureMap, BiomeRow[] biomes) {
+        int i;
+        float treeDensity;
+        Color biomeColor = new Color(0f, 0f, 0f);
+        for(i = 0; i < heightMap.Length; i ++) {
+            if (heightMap[i] == point) {
+                break;
+            }
+        }
+        colours = new Color[heatMap.Length];
+        float heat = Mathf.InverseLerp(0, 1, heatMap[i].y);
+        float moisture = Mathf.InverseLerp(0, 1, moistureMap[i].y);  
+        // BiomeRow[] heatType = ChooseBiomeType (heat, biomes);
+        // Biome biomeType = ChooseBiomeType (moisture, heatType);
+        foreach (BiomeRow biomeRow in biomes) {
+            if (heat < biomeRow.threshold) {   
+                heatType = biomeRow.biomes;
+                break;
+            } else {
+                heatType = biomes [biomes.Length - 1].biomes;
+            }
+        }
+        foreach (Biome biome in heatType) {
+            if (moisture < biome.threshold) {   
+                biomeType = biome;
+                break;
+            } else {
+                heatType = biomes [biomes.Length - 1].biomes;
+            }
+        }
+        treeDensity = biomeType.treeDensity;
+        return treeDensity;
     }
 
     public Vector3 FindY(Vector3 i, Vector3 j, Vector3 k, Vector3 p) {
@@ -131,7 +170,7 @@ public class TerrainGenerator : MonoBehaviour {
             m = (p.x - i.x - n*(L2.x)) / L1.x;
         }
         // Debug.Log(i + m*(L1) + n*(L2));
-        return i + m*(L1) + n*(L2); // Vector of p minus the distance from zero. 
+        return i + m*(L1) + n*(L2); // Vector of p.
     }
 
     public float GenerateTerrain(float maxValue, int resolutionDevisionNum) {
@@ -413,6 +452,7 @@ public class TerrainType {
 public class Biome {
     public string name;
     public string biomeName;
+    public float treeDensity;
     public float threshold; 
     public Color color;
 }
