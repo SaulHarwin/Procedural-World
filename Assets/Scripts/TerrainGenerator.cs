@@ -50,61 +50,62 @@ public class TerrainGenerator : MonoBehaviour {
         float distanceFromZero = GenerateTerrain(maxValue, resolutionDevisionNum);
         transform.position = new Vector3 ( transform.position.x, -distanceFromZero, transform.position.z);
         UpdateMesh();
-
         points = TreeGeneration.GeneratePoints(radius, regionSize, rejectionSamples);
         FindNearestPoints(points, maxValue);
     }
     public void FindNearestPoints(List<Vector2> points, float maxValue) {
-        if (points != null) {
-            foreach (Vector2 point_ in points) {
-                
-                // Point of object.
-                Vector3 p = new Vector3(point_.x, 0, point_.y);
-                Vector3 i = new Vector3(300,300,300); 
-                Vector3 j = new Vector3(300,300,300);
-                Vector3 k = new Vector3(300,300,300); 
-                float dst1 = 300;
-                float dst2 = 300;
-                float dst3 = 300;
+        if (transform.childCount == 0) { // If the chunk has already got tree on it don't try and spawn more.
+            if (points != null) {
+                foreach (Vector2 point_ in points) {
+                    
+                    // Point of object.
+                    Vector3 p = new Vector3(point_.x, 0, point_.y);
+                    Vector3 i = new Vector3(300,300,300); 
+                    Vector3 j = new Vector3(300,300,300);
+                    Vector3 k = new Vector3(300,300,300); 
+                    float dst1 = 300;
+                    float dst2 = 300;
+                    float dst3 = 300;
 
-                float newDst;
-                foreach (Vector3 point in heightMap) {
-                    newDst = Vector2.Distance(new Vector2(p.x, p.z), new Vector2(point.x, point.z));
-                    newDst *= newDst;
-                    if (newDst < dst1) {
-                        dst1 = newDst;
-                        i = point;
-                    }
-                }
-                foreach (Vector3 point in heightMap) {
-                    if (point != i) {
+                    float newDst;
+                    foreach (Vector3 point in heightMap) {
                         newDst = Vector2.Distance(new Vector2(p.x, p.z), new Vector2(point.x, point.z));
                         newDst *= newDst;
-                        if (newDst >= dst1 && newDst < dst2) {
-                            dst2 = newDst;
-                            j = point;
+                        if (newDst < dst1) {
+                            dst1 = newDst;
+                            i = point;
                         }
                     }
-                }
-                foreach (Vector3 point in heightMap) {
-                    if (point != i && point != j) {
-                        newDst = Vector2.Distance(new Vector2(p.x, p.z), new Vector2(point.x, point.z));
-                        newDst *= newDst;
-                        if (newDst >= dst2 && newDst < dst3) {
-                            dst3 = newDst;
-                            k = point;
+                    foreach (Vector3 point in heightMap) {
+                        if (point != i) {
+                            newDst = Vector2.Distance(new Vector2(p.x, p.z), new Vector2(point.x, point.z));
+                            newDst *= newDst;
+                            if (newDst >= dst1 && newDst < dst2) {
+                                dst2 = newDst;
+                                j = point;
+                            }
                         }
                     }
-                }
-                float treeDensity = FindBiome(i, heatMap, moistureMap, biomes);
-                float x = UnityEngine.Random.Range(0f,1f);
-                if (x < treeDensity) {
-                    p = FindY(i, j, k, p);
-                    if (p.y > 0 + maxValue / 4) { // If the tree will be under water then don't place it.  
-                        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                        cube.transform.parent = transform;
-                        cube.transform.localScale = new Vector3(displayRadius, displayRadius, displayRadius);
-                        cube.transform.Translate(transform.position + p * terrainData.scale);
+                    foreach (Vector3 point in heightMap) {
+                        if (point != i && point != j) {
+                            newDst = Vector2.Distance(new Vector2(p.x, p.z), new Vector2(point.x, point.z));
+                            newDst *= newDst;
+                            if (newDst >= dst2 && newDst < dst3) {
+                                dst3 = newDst;
+                                k = point;
+                            }
+                        }
+                    }
+                    float treeDensity = FindBiome(i, heatMap, moistureMap, biomes);
+                    float x = UnityEngine.Random.Range(0f,1f);
+                    if (x < treeDensity) {
+                        p = FindY(i, j, k, p);
+                        if (p.y > 0 + maxValue / 4) { // If the tree will be under water then don't place it.  
+                            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                            cube.transform.parent = transform;
+                            cube.transform.localScale = new Vector3(displayRadius, displayRadius, displayRadius);
+                            cube.transform.Translate(transform.position + p * terrainData.scale);
+                        }
                     }
                 }
             }
