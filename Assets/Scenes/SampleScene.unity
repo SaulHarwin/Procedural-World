@@ -693,6 +693,7 @@ MonoBehaviour:
   regionSize: {x: 240, y: 240}
   rejectionSamples: 4
   displayRadius: 25
+  foliage: 0
   heatType: []
   biomeType:
     name: 
@@ -753,7 +754,7 @@ MonoBehaviour:
     colour: {r: 1, g: 0, b: 0, a: 0}
     threshold: 1
     index: 0
-  visualizationMode: 3
+  visualizationMode: 0
   biomes:
   - name: Coldest
     threshold: 0.25
@@ -940,7 +941,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkingSpeed: 2
-  runningSpeed: 3
+  runningSpeed: 20
   jumpSpeed: 1.6
   gravity: 4
   playerCamera: {fileID: 19429407}

@@ -14,6 +14,7 @@ public class TerrainGenerator : MonoBehaviour {
 
 	List<Vector2> points;
 
+    public bool foliage;
 
     public Biome[] heatType;
     public Biome biomeType;
@@ -50,8 +51,10 @@ public class TerrainGenerator : MonoBehaviour {
         float distanceFromZero = GenerateTerrain(maxValue, resolutionDevisionNum);
         transform.position = new Vector3 ( transform.position.x, -distanceFromZero, transform.position.z);
         UpdateMesh();
-        points = TreeGeneration.GeneratePoints(radius, regionSize, rejectionSamples);
-        FindNearestPoints(points, maxValue);
+        if (foliage) {
+            points = TreeGeneration.GeneratePoints(radius, regionSize, rejectionSamples);
+            FindNearestPoints(points, maxValue);
+        }
     }
     public void FindNearestPoints(List<Vector2> points, float maxValue) {
         if (transform.childCount == 0) { // If the chunk has already got tree on it don't try and spawn more.
@@ -100,7 +103,7 @@ public class TerrainGenerator : MonoBehaviour {
                     float x = UnityEngine.Random.Range(0f,1f);
                     if (x < treeDensity) {
                         p = FindY(i, j, k, p);
-                        if (p.y > 0 + maxValue / 4) { // If the tree will be under water then don't place it.  
+                        if (p.y > maxValue / 8) { // If the tree will be under water then don't place it.  
                             GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                             cube.transform.parent = transform;
                             cube.transform.localScale = new Vector3(displayRadius, displayRadius, displayRadius);
@@ -213,6 +216,7 @@ public class TerrainGenerator : MonoBehaviour {
                 float newFrequency = noiseData.frequency;
                 float normalization = 0;
                 int newSeed = noiseData.seed;
+                int newLandMassSeed = noiseData.seedLandMass;
 
                 float offSetX = (transform.position.x * noiseData.frequency) / terrainData.scale;
                 float offSetZ = (transform.position.z * noiseData.frequency) / terrainData.scale;
@@ -226,7 +230,7 @@ public class TerrainGenerator : MonoBehaviour {
                 float moistureMapOffSetX = (transform.position.x * noiseData.moistureMapFrequency) / terrainData.scale;
                 float moistureMapOffSetZ = (transform.position.z * noiseData.moistureMapFrequency) / terrainData.scale;
 
-                for (int o = 1; o <= noiseData.octaves; o++, newSeed += 500, newFrequency *= noiseData.lacinarity, newAmplitude *= noiseData.persistance) {
+                for (int o = 1; o <= noiseData.octaves; o++, newSeed += 500, newLandMassSeed += 500, newFrequency *= noiseData.lacinarity, newAmplitude *= noiseData.persistance) {
 
                     if (o == 1) {
                         heightMapValue = Mathf.PerlinNoise(x  * newFrequency + (newSeed - (-offSetX)), z * newFrequency + (newSeed - (-offSetZ)));
@@ -243,7 +247,7 @@ public class TerrainGenerator : MonoBehaviour {
                     }
                 };
                 // Continent Script 
-                float continentValue = Mathf.PerlinNoise(x * noiseData.landMassFrequency + (newSeed - (-landMassOffSetX)), z * noiseData.landMassFrequency + (newSeed - (-landMassOffSetZ)));
+                float continentValue = Mathf.PerlinNoise(x * noiseData.landMassFrequency + (newLandMassSeed - (-landMassOffSetX)), z * noiseData.landMassFrequency + (newLandMassSeed - (-landMassOffSetZ)));
                 continentValue = terrainData.landMassHeightCurve.Evaluate(continentValue);
                 continentValue = continentValue * 2 -1; // Centering around Zero.
                 continentValue = continentValue * noiseData.landMassAmplitude;
@@ -360,7 +364,7 @@ public class TerrainGenerator : MonoBehaviour {
         float newX = 1;
 
         // Can't need to work out away of predicting maxHeight value
-        float maxValue = 800f;
+        float maxValue = 1000f;
         return maxValue;
     }
     
