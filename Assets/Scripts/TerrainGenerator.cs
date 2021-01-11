@@ -7,10 +7,10 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter))]
 public class TerrainGenerator : MonoBehaviour {
 
-    public float radius;
-	public Vector2 regionSize = Vector2.one;
-	public int rejectionSamples;
-	public float displayRadius;
+    // public float radius;
+	// public Vector2 regionSize = Vector2.one;
+	// public int rejectionSamples;
+	// public float displayRadius;
 
 	List<Vector2> points;
 
@@ -34,6 +34,7 @@ public class TerrainGenerator : MonoBehaviour {
 
     public NoiseData noiseData;
     public TerrainData terrainData;
+    public TreeData treeData;
 
     [SerializeField] private TerrainType[] heightTerrainTypes;
     [SerializeField] private TerrainType[] heatTerrainTypes;
@@ -52,7 +53,7 @@ public class TerrainGenerator : MonoBehaviour {
         transform.position = new Vector3 ( transform.position.x, -distanceFromZero, transform.position.z);
         UpdateMesh();
         if (foliage) {
-            points = TreeGeneration.GeneratePoints(radius, regionSize, rejectionSamples);
+            points = TreeGeneration.GeneratePoints(treeData.radius, treeData.regionSize, treeData.rejectionSamples);
             FindNearestPoints(points, maxValue);
         }
     }
@@ -106,7 +107,7 @@ public class TerrainGenerator : MonoBehaviour {
                         if (p.y > maxValue / 8) { // If the tree will be under water then don't place it.  
                             GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                             cube.transform.parent = transform;
-                            cube.transform.localScale = new Vector3(displayRadius, displayRadius, displayRadius);
+                            cube.transform.localScale = new Vector3(treeData.displayRadius, treeData.displayRadius, treeData.displayRadius);
                             cube.transform.Translate(transform.position + p * terrainData.scale);
                         }
                     }
@@ -116,7 +117,7 @@ public class TerrainGenerator : MonoBehaviour {
     }
 
     public float FindBiome(Vector3 point, Vector3[] heatMap, Vector3[] moistureMap, BiomeRow[] biomes) {
-        int i;
+        int i = 0;
         float treeDensity;
         Color biomeColor = new Color(0f, 0f, 0f);
         for(i = 0; i < heightMap.Length; i ++) {

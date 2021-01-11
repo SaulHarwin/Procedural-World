@@ -689,11 +689,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb7184da68d2e04bba8cce5bde3833f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 50
-  regionSize: {x: 240, y: 240}
-  rejectionSamples: 4
-  displayRadius: 25
-  foliage: 0
+  foliage: 1
   heatType: []
   biomeType:
     name: 
@@ -703,10 +699,11 @@ MonoBehaviour:
     color: {r: 0, g: 0, b: 0, a: 0}
   noiseData: {fileID: 11400000, guid: 01e2b8d2ad757ce45ac47f6977014b53, type: 2}
   terrainData: {fileID: 11400000, guid: 4cedd16cddfc2774c9106d0e7d8b47f8, type: 2}
+  treeData: {fileID: 11400000, guid: 6c854e8680bb82d45bc59943e810c8f4, type: 2}
   heightTerrainTypes:
   - name: Lowest
     colour: {r: 0, g: 0.37265134, b: 1, a: 0}
-    threshold: 0.125
+    threshold: 0.25
     index: 3
   - name: Low
     colour: {r: 0, g: 0.989563, b: 1, a: 0}
@@ -754,7 +751,7 @@ MonoBehaviour:
     colour: {r: 1, g: 0, b: 0, a: 0}
     threshold: 1
     index: 0
-  visualizationMode: 0
+  visualizationMode: 3
   biomes:
   - name: Coldest
     threshold: 0.25
@@ -974,7 +971,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1685546534}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 80, z: 0}
+  m_LocalPosition: {x: 0, y: 1978, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 630854906}
