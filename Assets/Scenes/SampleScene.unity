@@ -347,6 +347,7 @@ MonoBehaviour:
   terrain: {fileID: 0}
   terrainData: {fileID: 0}
   noiseData: {fileID: 0}
+  countTag: 0
 --- !u!1 &630854905
 GameObject:
   m_ObjectHideFlags: 0
@@ -528,7 +529,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1315441750
 GameObject:
@@ -622,56 +623,13 @@ RectTransform:
   m_Children:
   - {fileID: 1132735828}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!1 &1393733265
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1393733267}
-  - component: {fileID: 1393733266}
-  m_Layer: 0
-  m_Name: Map
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1393733266
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1393733265}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87cf270acc6a351408eef5b5e08eef76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &1393733267
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1393733265}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1480744938
 GameObject:
   m_ObjectHideFlags: 0
@@ -685,6 +643,7 @@ GameObject:
   - component: {fileID: 1480744942}
   - component: {fileID: 1480744941}
   - component: {fileID: 1480744940}
+  - component: {fileID: 1480744939}
   m_Layer: 0
   m_Name: Terrain
   m_TagString: Untagged
@@ -692,6 +651,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1480744939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1480744938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9c478c0de1e3f14cae8c3cca13b87d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!64 &1480744940
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -718,6 +689,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb7184da68d2e04bba8cce5bde3833f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  radius: 50
+  regionSize: {x: 240, y: 240}
+  rejectionSamples: 4
+  displayRadius: 25
+  foliage: 0
+  heatType: []
+  biomeType:
+    name: 
+    biomeName: 
+    treeDensity: 0
+    threshold: 0
+    color: {r: 0, g: 0, b: 0, a: 0}
   noiseData: {fileID: 11400000, guid: 01e2b8d2ad757ce45ac47f6977014b53, type: 2}
   terrainData: {fileID: 11400000, guid: 4cedd16cddfc2774c9106d0e7d8b47f8, type: 2}
   heightTerrainTypes:
@@ -771,25 +754,29 @@ MonoBehaviour:
     colour: {r: 1, g: 0, b: 0, a: 0}
     threshold: 1
     index: 0
-  visualizationMode: 3
+  visualizationMode: 0
   biomes:
   - name: Coldest
     threshold: 0.25
     biomes:
     - name: Dryest
       biomeName: artic
+      treeDensity: 0
       threshold: 0.25
       color: {r: 0.5707547, g: 1, b: 0.9597456, a: 0}
     - name: Dry
       biomeName: tundra
+      treeDensity: 0.1
       threshold: 0.5
-      color: {r: 1, g: 1, b: 1, a: 0}
+      color: {r: 1, g: 1, b: 1, a: 1}
     - name: Wet
       biomeName: tundra
+      treeDensity: 0.1
       threshold: 0.75
       color: {r: 1, g: 1, b: 1, a: 0}
     - name: Wettest
       biomeName: tundra
+      treeDensity: 0.1
       threshold: 1
       color: {r: 1, g: 1, b: 1, a: 0}
   - name: Cold
@@ -797,18 +784,22 @@ MonoBehaviour:
     biomes:
     - name: Dryest
       biomeName: boreal forest
+      treeDensity: 1
       threshold: 0.25
       color: {r: 0.6132076, g: 0.5754531, b: 0.54668033, a: 0}
     - name: Dry
       biomeName: boreal forest
+      treeDensity: 1
       threshold: 0.5
       color: {r: 0.6117647, g: 0.5764706, b: 0.54509807, a: 0}
     - name: Wet
       biomeName: boreal forest
+      treeDensity: 1
       threshold: 0.75
       color: {r: 0.6117647, g: 0.5764706, b: 0.54509807, a: 0}
     - name: Wettest
       biomeName: tundra
+      treeDensity: 0.1
       threshold: 1
       color: {r: 1, g: 1, b: 1, a: 0}
   - name: Hot
@@ -816,18 +807,22 @@ MonoBehaviour:
     biomes:
     - name: Dryest
       biomeName: savanna
+      treeDensity: 0.3
       threshold: 0.25
       color: {r: 0.80322385, g: 0.9433962, b: 0.28034887, a: 0}
     - name: Dry
       biomeName: grassland
+      treeDensity: 0.3
       threshold: 0.5
       color: {r: 0.37131512, g: 0.745283, b: 0.24256852, a: 0}
     - name: Wet
       biomeName: grassland
+      treeDensity: 0.3
       threshold: 0.75
       color: {r: 0.37254903, g: 0.74509805, b: 0.24313727, a: 0}
     - name: Wettest
       biomeName: forest
+      treeDensity: 1
       threshold: 1
       color: {r: 0.011764707, g: 0.227451, b: 0, a: 0}
   - name: Hottest
@@ -835,18 +830,22 @@ MonoBehaviour:
     biomes:
     - name: Dryest
       biomeName: desert
+      treeDensity: 0.2
       threshold: 0.25
       color: {r: 1, g: 0.9857755, b: 0.3915094, a: 0}
     - name: Dry
       biomeName: savanna
+      treeDensity: 0.3
       threshold: 0.5
       color: {r: 0.80392164, g: 0.9450981, b: 0.2784314, a: 0}
     - name: Wet
       biomeName: tropical rainforest
+      treeDensity: 1
       threshold: 0.75
       color: {r: 1, g: 0, b: 0.85098046, a: 0}
     - name: Wettest
       biomeName: tropical rainforest
+      treeDensity: 1
       threshold: 1
       color: {r: 1, g: 0, b: 0.85098046, a: 0}
 --- !u!23 &1480744942
@@ -908,7 +907,7 @@ Transform:
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1685546534
 GameObject:
@@ -942,7 +941,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkingSpeed: 2
-  runningSpeed: 3
+  runningSpeed: 20
   jumpSpeed: 1.6
   gravity: 4
   playerCamera: {fileID: 19429407}
@@ -975,7 +974,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1685546534}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 79, z: 0}
+  m_LocalPosition: {x: 0, y: 80, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 630854906}
@@ -999,6 +998,7 @@ MonoBehaviour:
   terrain: {fileID: 1480744944}
   terrainData: {fileID: 11400000, guid: 4cedd16cddfc2774c9106d0e7d8b47f8, type: 2}
   noiseData: {fileID: 11400000, guid: 01e2b8d2ad757ce45ac47f6977014b53, type: 2}
+  countTag: 0
 --- !u!1 &2059407328
 GameObject:
   m_ObjectHideFlags: 0
@@ -1155,5 +1155,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

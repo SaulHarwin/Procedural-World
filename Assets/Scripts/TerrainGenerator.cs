@@ -7,8 +7,17 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter))]
 public class TerrainGenerator : MonoBehaviour {
 
-    private Biome[] heatType;
-    private Biome biomeType;
+    public float radius;
+	public Vector2 regionSize = Vector2.one;
+	public int rejectionSamples;
+	public float displayRadius;
+
+	List<Vector2> points;
+
+    public bool foliage;
+
+    public Biome[] heatType;
+    public Biome biomeType;
 
     public static Mesh mesh;
     public Maps maps;
@@ -33,18 +42,143 @@ public class TerrainGenerator : MonoBehaviour {
     [SerializeField] private VisualizationMode visualizationMode;
     enum VisualizationMode {Shaded, Heat, Moisture, Biomes}
 
-    public void Startup(int LODIndex) {
+    public void Startup(int LODIndex, string chunkName) {
         int resolution = terrainData.resolutionLevels[LODIndex].resolution;
+        int resolutionDevisionNum = (resolution ==0)?1:resolution*2;
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
         float maxValue = CalculateMaxAndMinValues();
-        float distanceFromZero = GenerateTerrain(maxValue, resolution);
+        float distanceFromZero = GenerateTerrain(maxValue, resolutionDevisionNum);
         transform.position = new Vector3 ( transform.position.x, -distanceFromZero, transform.position.z);
         UpdateMesh();
+        if (foliage) {
+            points = TreeGeneration.GeneratePoints(radius, regionSize, rejectionSamples);
+            FindNearestPoints(points, maxValue);
+        }
+    }
+    public void FindNearestPoints(List<Vector2> points, float maxValue) {
+        if (transform.childCount == 0) { // If the chunk has already got tree on it don't try and spawn more.
+            if (points != null) {
+                foreach (Vector2 point_ in points) {
+                    
+                    // Point of object.
+                    Vector3 p = new Vector3(point_.x, 0, point_.y);
+                    Vector3 i = new Vector3(300,300,300); 
+                    Vector3 j = new Vector3(300,300,300);
+                    Vector3 k = new Vector3(300,300,300); 
+                    float dst1 = 300;
+                    float dst2 = 300;
+                    float dst3 = 300;
+
+                    float newDst;
+                    foreach (Vector3 point in heightMap) {
+                        newDst = Vector2.Distance(new Vector2(p.x, p.z), new Vector2(point.x, point.z));
+                        newDst *= newDst;
+                        if (newDst < dst1) {
+                            dst1 = newDst;
+                            i = point;
+                        }
+                    }
+                    foreach (Vector3 point in heightMap) {
+                        if (point != i) {
+                            newDst = Vector2.Distance(new Vector2(p.x, p.z), new Vector2(point.x, point.z));
+                            newDst *= newDst;
+                            if (newDst >= dst1 && newDst < dst2) {
+                                dst2 = newDst;
+                                j = point;
+                            }
+                        }
+                    }
+                    foreach (Vector3 point in heightMap) {
+                        if (point != i && point != j) {
+                            newDst = Vector2.Distance(new Vector2(p.x, p.z), new Vector2(point.x, point.z));
+                            newDst *= newDst;
+                            if (newDst >= dst2 && newDst < dst3) {
+                                dst3 = newDst;
+                                k = point;
+                            }
+                        }
+                    }
+                    float treeDensity = FindBiome(i, heatMap, moistureMap, biomes);
+                    float x = UnityEngine.Random.Range(0f,1f);
+                    if (x < treeDensity) {
+                        p = FindY(i, j, k, p);
+                        if (p.y > maxValue / 8) { // If the tree will be under water then don't place it.  
+                            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                            cube.transform.parent = transform;
+                            cube.transform.localScale = new Vector3(displayRadius, displayRadius, displayRadius);
+                            cube.transform.Translate(transform.position + p * terrainData.scale);
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    public float GenerateTerrain(float maxValue, int resolution) {
-        int resolutionDevisionNum = (resolution ==0)?1:resolution*2;
+    public float FindBiome(Vector3 point, Vector3[] heatMap, Vector3[] moistureMap, BiomeRow[] biomes) {
+        int i;
+        float treeDensity;
+        Color biomeColor = new Color(0f, 0f, 0f);
+        for(i = 0; i < heightMap.Length; i ++) {
+            if (heightMap[i] == point) {
+                break;
+            }
+        }
+        colours = new Color[heatMap.Length];
+        float heat = Mathf.InverseLerp(0, 1, heatMap[i].y);
+        float moisture = Mathf.InverseLerp(0, 1, moistureMap[i].y);  
+        // BiomeRow[] heatType = ChooseBiomeType (heat, biomes);
+        // Biome biomeType = ChooseBiomeType (moisture, heatType);
+        foreach (BiomeRow biomeRow in biomes) {
+            if (heat < biomeRow.threshold) {   
+                heatType = biomeRow.biomes;
+                break;
+            } else {
+                heatType = biomes [biomes.Length - 1].biomes;
+            }
+        }
+        foreach (Biome biome in heatType) {
+            if (moisture < biome.threshold) {   
+                biomeType = biome;
+                break;
+            } else {
+                heatType = biomes [biomes.Length - 1].biomes;
+            }
+        }
+        treeDensity = biomeType.treeDensity;
+        return treeDensity;
+    }
+
+    public Vector3 FindY(Vector3 i, Vector3 j, Vector3 k, Vector3 p) {
+        Vector3 L1 = j - i;
+        Vector3 L2 = k - j;
+        float m;
+        float n; 
+        if ( L1.x == 0f) { // if l1.x == 0 
+            n = (p.x - i.x) / L2.x;
+            m = (p.z - i.z - n*(L2.z)) / L1.z;
+        }
+        else if ( L2.x == 0f) { // if l2.x == 0
+            m = (p.x - i.x) / L1.x;
+            n = (p.z - i.z - m*(L1.z)) / L2.z; 
+        }
+        else if ( L1.z == 0f) {
+            n = (p.z - i.z) / L2.z;
+            m = (p.x - i.x - n*(L2.x)) / L1.x;
+        }
+        else if (L2.z == 0f) {
+            m = (p.z - i.z) / L1.z;
+            n = (p.x - i.x - m*(L1.x)) / L2.x;
+        }
+        else { // l1.x, l2.x, l1.z, 12.z != 0
+            n = (p.x * L1.z - p.z * L1.x + i.z * L1.x - i.x * L1.z) / (L1.z * L2.x - L1.x * L2.z);
+            m = (p.x - i.x - n*(L2.x)) / L1.x;
+        }
+        // Debug.Log(i + m*(L1) + n*(L2));
+        return i + m*(L1) + n*(L2); // Vector of p.
+    }
+
+    public float GenerateTerrain(float maxValue, int resolutionDevisionNum) {
         Color[] colours;
         Maps maps = GenerateheightMap(resolutionDevisionNum);
         int[] triangles = GenerateTriangles(resolutionDevisionNum);
@@ -82,6 +216,7 @@ public class TerrainGenerator : MonoBehaviour {
                 float newFrequency = noiseData.frequency;
                 float normalization = 0;
                 int newSeed = noiseData.seed;
+                int newLandMassSeed = noiseData.seedLandMass;
 
                 float offSetX = (transform.position.x * noiseData.frequency) / terrainData.scale;
                 float offSetZ = (transform.position.z * noiseData.frequency) / terrainData.scale;
@@ -95,7 +230,7 @@ public class TerrainGenerator : MonoBehaviour {
                 float moistureMapOffSetX = (transform.position.x * noiseData.moistureMapFrequency) / terrainData.scale;
                 float moistureMapOffSetZ = (transform.position.z * noiseData.moistureMapFrequency) / terrainData.scale;
 
-                for (int o = 1; o <= noiseData.octaves; o++, newSeed += 500, newFrequency *= noiseData.lacinarity, newAmplitude *= noiseData.persistance) {
+                for (int o = 1; o <= noiseData.octaves; o++, newSeed += 500, newLandMassSeed += 500, newFrequency *= noiseData.lacinarity, newAmplitude *= noiseData.persistance) {
 
                     if (o == 1) {
                         heightMapValue = Mathf.PerlinNoise(x  * newFrequency + (newSeed - (-offSetX)), z * newFrequency + (newSeed - (-offSetZ)));
@@ -112,7 +247,7 @@ public class TerrainGenerator : MonoBehaviour {
                     }
                 };
                 // Continent Script 
-                float continentValue = Mathf.PerlinNoise(x * noiseData.landMassFrequency + (newSeed - (-landMassOffSetX)), z * noiseData.landMassFrequency + (newSeed - (-landMassOffSetZ)));
+                float continentValue = Mathf.PerlinNoise(x * noiseData.landMassFrequency + (newLandMassSeed - (-landMassOffSetX)), z * noiseData.landMassFrequency + (newLandMassSeed - (-landMassOffSetZ)));
                 continentValue = terrainData.landMassHeightCurve.Evaluate(continentValue);
                 continentValue = continentValue * 2 -1; // Centering around Zero.
                 continentValue = continentValue * noiseData.landMassAmplitude;
@@ -229,7 +364,7 @@ public class TerrainGenerator : MonoBehaviour {
         float newX = 1;
 
         // Can't need to work out away of predicting maxHeight value
-        float maxValue = 800f;
+        float maxValue = 1000f;
         return maxValue;
     }
     
@@ -280,6 +415,28 @@ public class TerrainGenerator : MonoBehaviour {
         GetComponent<MeshCollider>().sharedMesh = mesh;
     }
 
+	// void OnDrawGizmos() {
+	// 	Gizmos.DrawWireCube(regionSize/2,regionSize);
+	// 	if (points != null) {
+    //         foreach (Vector2 point in points) {
+    //             Vector3 point = new Vector3(point[0], 0f, point[1]);
+    //             // GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+    //             // cube.transform.Translate(point[0], 0, point[1]);
+                
+    //             // for (int i = 0; i < mesh.vertices.Length; i ++) {
+    //             //     if (mesh.vertices[i][0] == point[0] && mesh.vertices[i][2] == point[1]) {
+    //             //         Debug.Log(mesh.vertices[i]);
+    //             //     }
+    //             // }
+	// 		}
+	// 	}
+	// }
+    // void OnDrawGizmos() {
+    //     for (int i = 0; i >= heightMap.Length; i++) {
+    //         Gizmos.DrawSphere(heightMap[i], 0.5f);
+    //     }
+    // }
+
     public struct Maps {
         public Vector3[] heightMap;
         public Vector3[] heatMap;
@@ -301,6 +458,7 @@ public class TerrainType {
 public class Biome {
     public string name;
     public string biomeName;
+    public float treeDensity;
     public float threshold; 
     public Color color;
 }

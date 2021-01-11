@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu()]
 public class NoiseData : ScriptableObject {    
     public int seed;
+    public int seedLandMass;
     public int seedHeat;
     public int seedMoisture;
     public int octaves;
