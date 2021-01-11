@@ -114,7 +114,7 @@ MonoBehaviour:
   m_MinSize: {x: 709, y: 392}
   m_MaxSize: {x: 18004, y: 14042}
   vertical: 1
-  controlID: 56
+  controlID: 109
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -140,7 +140,7 @@ MonoBehaviour:
   m_MinSize: {x: 709, y: 392}
   m_MaxSize: {x: 18004, y: 14042}
   vertical: 0
-  controlID: 57
+  controlID: 110
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -191,7 +191,7 @@ MonoBehaviour:
   m_MinSize: {x: 232, y: 392}
   m_MaxSize: {x: 10002, y: 14042}
   vertical: 1
-  controlID: 16
+  controlID: 71
 --- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -906,9 +906,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 16654.096, y: 41808.61, z: 17202.453}
+    m_Target: {x: -47090.57, y: -33648.04, z: -1900.4697}
     speed: 2
-    m_Value: {x: 16654.096, y: 41808.61, z: 17202.453}
+    m_Value: {x: -47090.57, y: -33648.04, z: -1900.4697}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -954,13 +954,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.008691617, y: -0.97528005, z: 0.21738452, w: -0.03892522}
+    m_Target: {x: -0.24278675, y: -0.7262411, z: 0.31418762, w: -0.56119144}
     speed: 2
-    m_Value: {x: -0.00869154, y: -0.97527134, z: 0.21738258, w: -0.038924873}
+    m_Value: {x: -0.24278417, y: -0.7262334, z: 0.31418428, w: -0.5611855}
   m_Size:
-    m_Target: 64277.5
+    m_Target: 33062.137
     speed: 2
-    m_Value: 67306.28
+    m_Value: 33062.137
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1016,7 +1016,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 9ed6ffff1a6a0000
+      m_ExpandedIDs: f0faffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1159,20 +1159,20 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Terrain Assets
+    - Assets/Scripts
   m_ViewMode: 1
   m_StartGridSize: 76
   m_LastFolders:
-  - Assets/Terrain Assets
+  - Assets/Scripts
   m_LastFoldersGridSize: 76
-  m_LastProjectPath: D:\Users\saulh\Desktop\New folder (2)\Procedural-World
+  m_LastProjectPath: D:\Users\saulh\Desktop\New folder (3)\Procedural-World
   m_LockTracker:
     m_IsLocked: 1
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 886a0000
-    m_LastClickedID: 27272
-    m_ExpandedIDs: 00000000786a00007a6a00007c6a000000ca9a3b
+    m_SelectedIDs: 983d0000
+    m_LastClickedID: 15768
+    m_ExpandedIDs: 000000006a3d00006c3d00006e3d000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1200,7 +1200,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000786a00007a6a00007c6a0000
+    m_ExpandedIDs: 000000006a3d00006c3d00006e3d0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1227,7 +1227,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 1
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: c623000000000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
