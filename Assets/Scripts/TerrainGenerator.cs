@@ -410,7 +410,7 @@ public class TerrainGenerator : MonoBehaviour {
         mesh.Clear();
         mesh.vertices = heightMap;
         mesh.triangles = triangles;
-        mesh.colors = colours;
+        // mesh.colors = colours;
         // mesh.normals = CalculateNormals(); 
         mesh.RecalculateNormals();
         GetComponent<MeshCollider>().sharedMesh = mesh;
