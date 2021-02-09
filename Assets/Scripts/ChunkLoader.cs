@@ -69,7 +69,9 @@ void UpdateVisibleChunks(float maxViewDst) {
         TerrainData terrainData;
         NoiseData noiseData;
         GameObject terrainClone;
-        GameObject meshObject;
+        GameObject waterClone;
+        GameObject terrainObject;
+        GameObject waterObject;
         GameObject a;
         GameObject b;
         Vector2 position;
@@ -83,11 +85,19 @@ void UpdateVisibleChunks(float maxViewDst) {
             float playerDstFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(playerPosition));
             playerDstFromNearestEdge = playerDstFromNearestEdge / (size);
             Vector3 positionV3 = new Vector3(position.x, 0, position.y);
+            
             terrainClone = GameObject.Find("Terrain");
-            meshObject = Instantiate (terrainClone, positionV3, Quaternion.identity);
-            meshObject.transform.parent = GameObject.Find("Terrain Chunks").transform;
-            meshObject.transform.position = positionV3;
-            meshObject.name = "Chunk" + countTag.ToString();
+            terrainObject = Instantiate (terrainClone, positionV3, Quaternion.identity);
+            terrainObject.transform.parent = GameObject.Find("Terrain Chunks").transform;
+            terrainObject.transform.position = positionV3;
+            terrainObject.name = "Terrain Chunk" + countTag.ToString();
+            
+            waterClone = GameObject.Find("OceanPlane");
+            waterObject = Instantiate (waterClone, positionV3, Quaternion.identity);
+            waterObject.transform.parent = GameObject.Find("Terrain Chunks").transform;
+            waterObject.transform.position = positionV3;
+            waterObject.name = "Water Chunk" + countTag.ToString();
+            
             SetVisible(false);
         }
 
@@ -106,18 +116,19 @@ void UpdateVisibleChunks(float maxViewDst) {
                 }
             } 
             if (resolution != terrainData.resolutionLevels[LODIndex].resolution) { // Regenerate the chunks mesh only if the resolution of the chunk has changed.
-                meshObject.GetComponent<TerrainGenerator>().Startup(LODIndex, meshObject.name);
+                terrainObject.GetComponent<TerrainGenerator>().Startup(LODIndex, terrainObject.name);
             } 
             SetVisible(visible);
             return terrainData.resolutionLevels[LODIndex].resolution; // Return the resolution of the chunk.
         }
 
         public void SetVisible(bool visible) {
-            meshObject.SetActive(visible);
+            terrainObject.SetActive(visible);
+            waterObject.SetActive(visible);
         }
 
         public bool isVisible() {
-            return meshObject.activeSelf;
+            return terrainObject.activeSelf;
         }
     }
 }
