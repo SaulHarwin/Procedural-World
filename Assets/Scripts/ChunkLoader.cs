@@ -57,7 +57,7 @@ void UpdateVisibleChunks(float maxViewDst) {
                         terrainChunksVisibleLastUpdate.Add(terrainChunkDictionary[viewedChunkCoord]);
                     }
                 } else {
-                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, terrainData.chunkSize, terrainData.resolution, terrain, maxViewDst, terrainData, countTag));
+                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, terrainData.chunkSize, terrain, maxViewDst, terrainData, countTag));
                     resolutionDictionary.Add(viewedChunkCoord, 0); // Add the chunk's ChunkCoord to the dictionary.
                 }
                 countTag += 1;
@@ -78,7 +78,7 @@ void UpdateVisibleChunks(float maxViewDst) {
         Bounds bounds;
         Bounds boundsInChunks;
 
-        public TerrainChunk(Vector2 coord, int size, int resolution, Transform terrain, float maxViewDst, TerrainData terrainData, int countTag) {
+        public TerrainChunk(Vector2 coord, int size, Transform terrain, float maxViewDst, TerrainData terrainData, int countTag) {
             size *= terrainData.scale;
             position = coord * size;
             bounds = new Bounds(position,Vector2.one * size);

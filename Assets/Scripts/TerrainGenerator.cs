@@ -16,8 +16,8 @@ public class TerrainGenerator : MonoBehaviour {
 
     public bool foliage;
 
-    public Biome[] heatType;
-    public Biome biomeType;
+    Biome[] heatType;
+    Biome biomeType;
 
     public static Mesh mesh;
     public Maps maps;
@@ -40,22 +40,20 @@ public class TerrainGenerator : MonoBehaviour {
     [SerializeField] private TerrainType[] heatTerrainTypes;
     [SerializeField] private TerrainType[] moistureTerrainTypes;
     // [SerializeField] private TerrainType[] biomeTerrainTypes;
-    [SerializeField] private VisualizationMode visualizationMode;
-    enum VisualizationMode {Shaded, Heat, Moisture, Biomes}
 
     public void Startup(int LODIndex, string chunkName) {
         int resolution = terrainData.resolutionLevels[LODIndex].resolution;
-        int resolutionDevisionNum = (resolution ==0)?1:resolution*2;
+        int resolutionDevisionNum = (resolution == 0)?1:resolution*2;
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
         float maxValue = CalculateMaxAndMinValues();
         float distanceFromZero = GenerateTerrain(maxValue, resolutionDevisionNum);
         transform.position = new Vector3 ( transform.position.x, -distanceFromZero, transform.position.z);
-        UpdateMesh();
         if (foliage) {
             points = TreeGeneration.GeneratePoints(treeData.radius, treeData.regionSize, treeData.rejectionSamples);
             FindNearestPoints(points, maxValue);
         }
+        UpdateMesh();
     }
     public void FindNearestPoints(List<Vector2> points, float maxValue) {
         if (transform.childCount == 0) { // If the chunk has already got tree on it don't try and spawn more.
@@ -180,7 +178,6 @@ public class TerrainGenerator : MonoBehaviour {
     }
 
     public float GenerateTerrain(float maxValue, int resolutionDevisionNum) {
-        Color[] colours;
         Maps maps = GenerateheightMap(resolutionDevisionNum);
         int[] triangles = GenerateTriangles(resolutionDevisionNum);
         switch (this.visualizationMode) {
@@ -197,7 +194,6 @@ public class TerrainGenerator : MonoBehaviour {
                 colours = GenerateBiomes(maps.heatMap, maps.moistureMap, resolutionDevisionNum, maxValue, this.biomes);
                 break;
         }
-
         // This is only a prediction and a poor one at that because the heighest value won't be close to the max possible value attainable.
         float distanceFromZero = ((maxValue) / 8); 
         return distanceFromZero; 
@@ -208,7 +204,7 @@ public class TerrainGenerator : MonoBehaviour {
         heatMap = new Vector3[((terrainData.chunkSize / resolutionDevisionNum)+1) * ((terrainData.chunkSize / resolutionDevisionNum)+1)];
         moistureMap = new Vector3[((terrainData.chunkSize / resolutionDevisionNum)+1) * ((terrainData.chunkSize / resolutionDevisionNum)+1)];
 
-        float heightMapValue = 1;
+        double heightMapValue = 1;
 
         for (int i = 0, z = 0; z <= terrainData.chunkSize; z += resolutionDevisionNum) {
             for (int x = 0; x <= terrainData.chunkSize; x += resolutionDevisionNum) {
@@ -232,29 +228,28 @@ public class TerrainGenerator : MonoBehaviour {
                 float moistureMapOffSetZ = (transform.position.z * noiseData.moistureMapFrequency) / terrainData.scale;
 
                 for (int o = 1; o <= noiseData.octaves; o++, newSeed += 500, newLandMassSeed += 500, newFrequency *= noiseData.lacinarity, newAmplitude *= noiseData.persistance) {
-
                     if (o == 1) {
-                        heightMapValue = Mathf.PerlinNoise(x  * newFrequency + (newSeed - (-offSetX)), z * newFrequency + (newSeed - (-offSetZ)));
-                        heightMapValue = terrainData.meshHeightCurve.Evaluate(heightMapValue);
-                        heightMapValue = heightMapValue * newAmplitude;
+                        heightMapValue = Mathf.PerlinNoise(x  * newFrequency + (newSeed + offSetX), z * newFrequency + (newSeed + offSetZ));
+                        heightMapValue = terrainData.meshHeightCurve.Evaluate((float)heightMapValue);
+                        heightMapValue = (heightMapValue * newAmplitude);
                     }
                     else {
                         offSetX *= noiseData.lacinarity;
                         offSetZ *= noiseData.lacinarity;
-                        float newHeightMapValue = Mathf.PerlinNoise(x * newFrequency + (newSeed - (-offSetX)), z * newFrequency + (newSeed - (-offSetZ)));
-                        newHeightMapValue = terrainData.meshHeightCurve.Evaluate(newHeightMapValue);
+                        double newHeightMapValue = Mathf.PerlinNoise(x * newFrequency + (newSeed - (-offSetX)), z * newFrequency + (newSeed - (-offSetZ)));
+                        newHeightMapValue = terrainData.meshHeightCurve.Evaluate((float)newHeightMapValue);
                         newHeightMapValue = newHeightMapValue * newAmplitude;
                         heightMapValue += newHeightMapValue;
                     }
                 };
                 // Continent Script 
                 float continentValue = Mathf.PerlinNoise(x * noiseData.landMassFrequency + (newLandMassSeed - (-landMassOffSetX)), z * noiseData.landMassFrequency + (newLandMassSeed - (-landMassOffSetZ)));
-                continentValue = terrainData.landMassHeightCurve.Evaluate(continentValue);
+                continentValue = terrainData.landMassHeightCurve.Evaluate((float)continentValue);
                 continentValue = continentValue * 2 -1; // Centering around Zero.
                 continentValue = continentValue * noiseData.landMassAmplitude;
                 heightMapValue += continentValue;
                 
-                heightMap[i] = new Vector3(x, heightMapValue, z);
+                heightMap[i] = new Vector3(x, (float)heightMapValue, z);
                 
                 // HeatMap Generation
                 float heatMapValue = Mathf.PerlinNoise(x * noiseData.heatMapFrequency + (noiseData.seedHeat - (-heatMapOffSetX)), z * noiseData.heatMapFrequency + (noiseData.seedHeat - (-heatMapOffSetZ)));
@@ -365,7 +360,7 @@ public class TerrainGenerator : MonoBehaviour {
         float newX = 1;
 
         // Can't need to work out away of predicting maxHeight value
-        float maxValue = 1000f;
+        float maxValue = 250f;
         return maxValue;
     }
     
@@ -410,33 +405,12 @@ public class TerrainGenerator : MonoBehaviour {
         mesh.Clear();
         mesh.vertices = heightMap;
         mesh.triangles = triangles;
-        // mesh.colors = colours;
+        Debug.Log(colours.Length);
+        mesh.colors = colours;
         // mesh.normals = CalculateNormals(); 
         mesh.RecalculateNormals();
         GetComponent<MeshCollider>().sharedMesh = mesh;
     }
-
-	// void OnDrawGizmos() {
-	// 	Gizmos.DrawWireCube(regionSize/2,regionSize);
-	// 	if (points != null) {
-    //         foreach (Vector2 point in points) {
-    //             Vector3 point = new Vector3(point[0], 0f, point[1]);
-    //             // GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-    //             // cube.transform.Translate(point[0], 0, point[1]);
-                
-    //             // for (int i = 0; i < mesh.vertices.Length; i ++) {
-    //             //     if (mesh.vertices[i][0] == point[0] && mesh.vertices[i][2] == point[1]) {
-    //             //         Debug.Log(mesh.vertices[i]);
-    //             //     }
-    //             // }
-	// 		}
-	// 	}
-	// }
-    // void OnDrawGizmos() {
-    //     for (int i = 0; i >= heightMap.Length; i++) {
-    //         Gizmos.DrawSphere(heightMap[i], 0.5f);
-    //     }
-    // }
 
     public struct Maps {
         public Vector3[] heightMap;
@@ -445,6 +419,9 @@ public class TerrainGenerator : MonoBehaviour {
     }
     [SerializeField]
 	private BiomeRow[] biomes;
+
+    [SerializeField] private VisualizationMode visualizationMode;
+    enum VisualizationMode {Shaded, Heat, Moisture, Biomes}
 }
 
 [System.Serializable]
