@@ -17,11 +17,11 @@ MonoBehaviour:
   seedHeat: 10144
   seedMoisture: 451
   octaves: 6
-  amplitude: 400
-  frequency: 0.001125
-  lacinarity: 1.6
-  persistance: 0.5
-  landMassFrequency: 0.0001
-  landMassAmplitude: 400
+  amplitude: 200
+  frequency: 0.00225
+  lacinarity: 2
+  persistance: 0.35
+  landMassFrequency: 0.00015
+  landMassAmplitude: 200
   heatMapFrequency: 0.0001
   moistureMapFrequency: 0.0001
