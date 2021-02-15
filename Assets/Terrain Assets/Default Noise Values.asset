@@ -18,7 +18,7 @@ MonoBehaviour:
   seedMoisture: 451
   octaves: 10
   amplitude: 1500
-  frequency: 0.0003
+  frequency: 0.00028
   lacinarity: 1.6
   persistance: 0.5
   landMassFrequency: 0.00001
