@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Default Terrain Values
   m_EditorClassIdentifier: 
   resolutionLevels:
-  - resolution: 2
+  - resolution: 1
     visibleChunksDstThreshold: 10
   - resolution: 5
     visibleChunksDstThreshold: 18
@@ -56,7 +56,7 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   scale: 1
   chunkSize: 240
-  maxViewDst: 10000
+  maxViewDst: 1000
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:

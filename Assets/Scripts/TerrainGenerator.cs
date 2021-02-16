@@ -43,7 +43,7 @@ public class TerrainGenerator : MonoBehaviour {
 
     public void Startup(int LODIndex, string chunkName) {
         int resolution = terrainData.resolutionLevels[LODIndex].resolution;
-        int resolutionDevisionNum = (resolution == 0)?1:resolution*2;
+        int resolutionDevisionNum = (resolution == 1)?1:resolution*2;
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
         float maxValue = CalculateMaxAndMinValues();
@@ -204,7 +204,7 @@ public class TerrainGenerator : MonoBehaviour {
         heatMap = new Vector3[((terrainData.chunkSize / resolutionDevisionNum)+1) * ((terrainData.chunkSize / resolutionDevisionNum)+1)];
         moistureMap = new Vector3[((terrainData.chunkSize / resolutionDevisionNum)+1) * ((terrainData.chunkSize / resolutionDevisionNum)+1)];
 
-        double heightMapValue = 1;
+        float heightMapValue = 1;
 
         for (int i = 0, z = 0; z <= terrainData.chunkSize; z += resolutionDevisionNum) {
             for (int x = 0; x <= terrainData.chunkSize; x += resolutionDevisionNum) {
@@ -230,26 +230,26 @@ public class TerrainGenerator : MonoBehaviour {
                 for (int o = 1; o <= noiseData.octaves; o++, newSeed += 500, newLandMassSeed += 500, newFrequency *= noiseData.lacinarity, newAmplitude *= noiseData.persistance) {
                     if (o == 1) {
                         heightMapValue = Mathf.PerlinNoise(x  * newFrequency + (newSeed + offSetX), z * newFrequency + (newSeed + offSetZ));
-                        heightMapValue = terrainData.meshHeightCurve.Evaluate((float)heightMapValue);
+                        heightMapValue = terrainData.meshHeightCurve.Evaluate(heightMapValue);
                         heightMapValue = (heightMapValue * newAmplitude);
                     }
                     else {
                         offSetX *= noiseData.lacinarity;
                         offSetZ *= noiseData.lacinarity;
-                        double newHeightMapValue = Mathf.PerlinNoise(x * newFrequency + (newSeed - (-offSetX)), z * newFrequency + (newSeed - (-offSetZ)));
-                        newHeightMapValue = terrainData.meshHeightCurve.Evaluate((float)newHeightMapValue);
+                        float newHeightMapValue = Mathf.PerlinNoise(x * newFrequency + (newSeed - (-offSetX)), z * newFrequency + (newSeed - (-offSetZ)));
+                        newHeightMapValue = terrainData.meshHeightCurve.Evaluate(newHeightMapValue);
                         newHeightMapValue = newHeightMapValue * newAmplitude;
                         heightMapValue += newHeightMapValue;
                     }
                 };
                 // Continent Script 
                 float continentValue = Mathf.PerlinNoise(x * noiseData.landMassFrequency + (newLandMassSeed - (-landMassOffSetX)), z * noiseData.landMassFrequency + (newLandMassSeed - (-landMassOffSetZ)));
-                continentValue = terrainData.landMassHeightCurve.Evaluate((float)continentValue);
+                continentValue = terrainData.landMassHeightCurve.Evaluate(continentValue);
                 continentValue = continentValue * 2 -1; // Centering around Zero.
                 continentValue = continentValue * noiseData.landMassAmplitude;
                 heightMapValue += continentValue;
                 
-                heightMap[i] = new Vector3(x, (float)heightMapValue, z);
+                heightMap[i] = new Vector3(x, heightMapValue, z);
                 
                 // HeatMap Generation
                 float heatMapValue = Mathf.PerlinNoise(x * noiseData.heatMapFrequency + (noiseData.seedHeat - (-heatMapOffSetX)), z * noiseData.heatMapFrequency + (noiseData.seedHeat - (-heatMapOffSetZ)));

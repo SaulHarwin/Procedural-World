@@ -124,7 +124,7 @@ void UpdateVisibleChunks(float maxViewDst) {
 
         public void SetVisible(bool visible) {
             terrainObject.SetActive(visible);
-            waterObject.SetActive(visible);
+            waterObject.SetActive(false);
         }
 
         public bool isVisible() {
