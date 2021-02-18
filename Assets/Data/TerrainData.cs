@@ -8,7 +8,7 @@ public class TerrainData : ScriptableObject {
     public Gradient gradient;
     public int scale = 1;
     public int chunkSize = 240;
-    public float maxViewDst = 500f;
+    public int maxViewDst = 5;
     public AnimationCurve meshHeightCurve;
     public AnimationCurve landMassHeightCurve;
 

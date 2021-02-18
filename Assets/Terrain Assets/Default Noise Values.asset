@@ -16,9 +16,9 @@ MonoBehaviour:
   seedLandMass: 1922
   seedHeat: 10144
   seedMoisture: 451
-  octaves: 1
-  amplitude: 1500
-  frequency: 0.0005
+  octaves: 6
+  amplitude: 1000
+  frequency: 0.0024
   lacinarity: 2
   persistance: 0.35
   landMassFrequency: 0.00015

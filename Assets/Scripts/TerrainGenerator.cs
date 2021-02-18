@@ -36,6 +36,8 @@ public class TerrainGenerator : MonoBehaviour {
     public TerrainData terrainData;
     public TreeData treeData;
 
+    public GameObject TexturePreview;
+
     [SerializeField] private TerrainType[] heightTerrainTypes;
     [SerializeField] private TerrainType[] heatTerrainTypes;
     [SerializeField] private TerrainType[] moistureTerrainTypes;
@@ -47,7 +49,7 @@ public class TerrainGenerator : MonoBehaviour {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
         float maxValue = CalculateMaxAndMinValues();
-        float distanceFromZero = GenerateTerrain(maxValue, resolutionDevisionNum);
+        float distanceFromZero = GenerateTerrain(maxValue, resolutionDevisionNum, chunkName);
         transform.position = new Vector3 ( transform.position.x, -distanceFromZero, transform.position.z);
         if (foliage) {
             points = TreeGeneration.GeneratePoints(treeData.radius, treeData.regionSize, treeData.rejectionSamples);
@@ -105,8 +107,8 @@ public class TerrainGenerator : MonoBehaviour {
                         if (p.y > maxValue / 8) { // If the tree will be under water then don't place it.  
                             GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                             cube.transform.parent = transform;
-                            cube.transform.localScale = new Vector3(treeData.displayRadius, treeData.displayRadius, treeData.displayRadius);
-                            cube.transform.Translate(transform.position + p * terrainData.scale);
+                            cube.transform.localScale = new Vector3(treeData.displayRadius / terrainData.scale, 5 * treeData.displayRadius, treeData.displayRadius / terrainData.scale);
+                            cube.transform.position = new Vector3(transform.position.x + p.x * terrainData.scale, transform.position.y + p.y, transform.position.z + p.z * terrainData.scale);
                         }
                     }
                 }
@@ -177,8 +179,8 @@ public class TerrainGenerator : MonoBehaviour {
         return i + m*(L1) + n*(L2); // Vector of p.
     }
 
-    public float GenerateTerrain(float maxValue, int resolutionDevisionNum) {
-        Maps maps = GenerateheightMap(resolutionDevisionNum);
+    public float GenerateTerrain(float maxValue, int resolutionDevisionNum, string chunkName) {
+        Maps maps = GenerateheightMap(resolutionDevisionNum, chunkName);
         int[] triangles = GenerateTriangles(resolutionDevisionNum);
         switch (this.visualizationMode) {
             case VisualizationMode.Shaded:
@@ -199,12 +201,13 @@ public class TerrainGenerator : MonoBehaviour {
         return distanceFromZero; 
     }
 
-    public Maps GenerateheightMap(int resolutionDevisionNum) {
+    public Maps GenerateheightMap(int resolutionDevisionNum, string chunkName) {
         heightMap = new Vector3[((terrainData.chunkSize / resolutionDevisionNum)+1) * ((terrainData.chunkSize / resolutionDevisionNum)+1)];
         heatMap = new Vector3[((terrainData.chunkSize / resolutionDevisionNum)+1) * ((terrainData.chunkSize / resolutionDevisionNum)+1)];
         moistureMap = new Vector3[((terrainData.chunkSize / resolutionDevisionNum)+1) * ((terrainData.chunkSize / resolutionDevisionNum)+1)];
 
         float heightMapValue = 1;
+        float[,] textureMap = new float[(terrainData.chunkSize / resolutionDevisionNum)+1, (terrainData.chunkSize / resolutionDevisionNum) +1];
 
         for (int i = 0, z = 0; z <= terrainData.chunkSize; z += resolutionDevisionNum) {
             for (int x = 0; x <= terrainData.chunkSize; x += resolutionDevisionNum) {
@@ -243,13 +246,17 @@ public class TerrainGenerator : MonoBehaviour {
                     }
                 };
                 // Continent Script 
-                float continentValue = Mathf.PerlinNoise(x * noiseData.landMassFrequency + (newLandMassSeed - (-landMassOffSetX)), z * noiseData.landMassFrequency + (newLandMassSeed - (-landMassOffSetZ)));
-                continentValue = terrainData.landMassHeightCurve.Evaluate(continentValue);
-                continentValue = continentValue * 2 -1; // Centering around Zero.
-                continentValue = continentValue * noiseData.landMassAmplitude;
-                heightMapValue += continentValue;
+                // float continentValue = Mathf.PerlinNoise(x * noiseData.landMassFrequency + (newLandMassSeed - (-landMassOffSetX)), z * noiseData.landMassFrequency + (newLandMassSeed - (-landMassOffSetZ)));
+                // continentValue = terrainData.landMassHeightCurve.Evaluate(continentValue);
+                // continentValue = continentValue * 2 -1; // Centering around Zero.
+                // continentValue = continentValue * noiseData.landMassAmplitude;
+                // heightMapValue += continentValue;
                 
                 heightMap[i] = new Vector3(x, heightMapValue, z);
+                
+                if (chunkName == "Terrain Chunk0") {
+                    textureMap[x,z] = heightMapValue;
+                }
                 
                 // HeatMap Generation
                 float heatMapValue = Mathf.PerlinNoise(x * noiseData.heatMapFrequency + (noiseData.seedHeat - (-heatMapOffSetX)), z * noiseData.heatMapFrequency + (noiseData.seedHeat - (-heatMapOffSetZ)));
@@ -261,6 +268,7 @@ public class TerrainGenerator : MonoBehaviour {
 
                 i++;
             }
+            TexturePreview.GetComponent<MapPreview>().DrawNoiseMap(textureMap);
         };
         maps.heightMap = heightMap;
         maps.heatMap = heatMap;
@@ -360,7 +368,7 @@ public class TerrainGenerator : MonoBehaviour {
         float newX = 1;
 
         // Can't need to work out away of predicting maxHeight value
-        float maxValue = 250f;
+        float maxValue = noiseData.amplitude * 0.8f;
         return maxValue;
     }
     
@@ -405,9 +413,8 @@ public class TerrainGenerator : MonoBehaviour {
         mesh.Clear();
         mesh.vertices = heightMap;
         mesh.triangles = triangles;
-        Debug.Log(colours.Length);
         mesh.colors = colours;
-        // mesh.normals = CalculateNormals(); 
+        mesh.normals = CalculateNormals(); 
         mesh.RecalculateNormals();
         GetComponent<MeshCollider>().sharedMesh = mesh;
     }

@@ -54,9 +54,9 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 5
     m_NumAlphaKeys: 2
-  scale: 1
+  scale: 8
   chunkSize: 240
-  maxViewDst: 1000
+  maxViewDst: 1
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:
