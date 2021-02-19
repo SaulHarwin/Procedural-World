@@ -9,6 +9,7 @@ public class NoiseData : ScriptableObject {
     public int seedHeat;
     public int seedMoisture;
     public int octaves;
+    public int mapScale;
 
     public float amplitude = 480f;
     public float frequency = 0.001f;

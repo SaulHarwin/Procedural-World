@@ -212,14 +212,22 @@ public class TerrainGenerator : MonoBehaviour {
         for (int i = 0, z = 0; z <= terrainData.chunkSize; z += resolutionDevisionNum) {
             for (int x = 0; x <= terrainData.chunkSize; x += resolutionDevisionNum) {
                 
-                float newAmplitude = noiseData.amplitude;
+                float newAmplitude = noiseData.amplitude * terrainData.scale;
                 float newFrequency = noiseData.frequency;
                 float normalization = 0;
                 int newSeed = noiseData.seed;
                 int newLandMassSeed = noiseData.seedLandMass;
 
-                float offSetX = (transform.position.x * noiseData.frequency) / terrainData.scale;
-                float offSetZ = (transform.position.z * noiseData.frequency) / terrainData.scale;
+                System.Random prng = new System.Random(noiseData.seed);
+                Vector2[] octaveOffsets = new Vector2[noiseData.octaves];
+                for (int j = 0; j < noiseData.octaves; j ++) {
+                    float octaveOffsetX = prng.Next(-100000, 100000);
+                    float octaveOffsetY = prng.Next(-100000, 100000);
+                    octaveOffsets[j] = new Vector2(octaveOffsetX, octaveOffsetY);
+                }
+
+                float offSetX = transform.position.x / terrainData.scale * noiseData.frequency;
+                float offSetZ = transform.position.z / terrainData.scale * noiseData.frequency;
 
                 float landMassOffSetX = (transform.position.x * noiseData.landMassFrequency) / terrainData.scale;
                 float landMassOffSetZ = (transform.position.z * noiseData.landMassFrequency) / terrainData.scale;
@@ -230,16 +238,16 @@ public class TerrainGenerator : MonoBehaviour {
                 float moistureMapOffSetX = (transform.position.x * noiseData.moistureMapFrequency) / terrainData.scale;
                 float moistureMapOffSetZ = (transform.position.z * noiseData.moistureMapFrequency) / terrainData.scale;
 
-                for (int o = 1; o <= noiseData.octaves; o++, newSeed += 500, newLandMassSeed += 500, newFrequency *= noiseData.lacinarity, newAmplitude *= noiseData.persistance) {
+                for (int o = 1; o <= noiseData.octaves; o++, newLandMassSeed += 500, newFrequency *= noiseData.lacinarity, newAmplitude *= noiseData.persistance) {
                     if (o == 1) {
-                        heightMapValue = Mathf.PerlinNoise(x  * newFrequency + (newSeed + offSetX), z * newFrequency + (newSeed + offSetZ));
+                        heightMapValue = Mathf.PerlinNoise((x + octaveOffsets[o-1].x) * newFrequency + offSetX, (z + octaveOffsets[o-1].y) * newFrequency + offSetZ);
                         heightMapValue = terrainData.meshHeightCurve.Evaluate(heightMapValue);
                         heightMapValue = (heightMapValue * newAmplitude);
                     }
                     else {
                         offSetX *= noiseData.lacinarity;
                         offSetZ *= noiseData.lacinarity;
-                        float newHeightMapValue = Mathf.PerlinNoise(x * newFrequency + (newSeed - (-offSetX)), z * newFrequency + (newSeed - (-offSetZ)));
+                        float newHeightMapValue = Mathf.PerlinNoise((x + octaveOffsets[o-1].x) * newFrequency + offSetX, (z + octaveOffsets[o-1].y) * newFrequency + offSetZ);
                         newHeightMapValue = terrainData.meshHeightCurve.Evaluate(newHeightMapValue);
                         newHeightMapValue = newHeightMapValue * newAmplitude;
                         heightMapValue += newHeightMapValue;
@@ -364,11 +372,8 @@ public class TerrainGenerator : MonoBehaviour {
     // }
 
     float CalculateMaxAndMinValues() {
-        float x = 1;
-        float newX = 1;
-
         // Can't need to work out away of predicting maxHeight value
-        float maxValue = noiseData.amplitude * 0.8f;
+        float maxValue = noiseData.amplitude * terrainData.scale * 0.8f ;
         return maxValue;
     }
     
