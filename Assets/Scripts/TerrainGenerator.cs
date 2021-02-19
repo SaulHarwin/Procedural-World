@@ -6,7 +6,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
 public class TerrainGenerator : MonoBehaviour {
-
+    public bool ContinentMap;
     // public float radius;
 	// public Vector2 regionSize = Vector2.one;
 	// public int rejectionSamples;
@@ -212,22 +212,22 @@ public class TerrainGenerator : MonoBehaviour {
         for (int i = 0, z = 0; z <= terrainData.chunkSize; z += resolutionDevisionNum) {
             for (int x = 0; x <= terrainData.chunkSize; x += resolutionDevisionNum) {
                 
-                float newAmplitude = noiseData.amplitude * terrainData.scale;
-                float newFrequency = noiseData.frequency;
+                float newAmplitude = noiseData.amplitude;
+                float newFrequency = noiseData.frequency * terrainData.scale;
                 float normalization = 0;
                 int newSeed = noiseData.seed;
                 int newLandMassSeed = noiseData.seedLandMass;
 
                 System.Random prng = new System.Random(noiseData.seed);
-                Vector2[] octaveOffsets = new Vector2[noiseData.octaves];
-                for (int j = 0; j < noiseData.octaves; j ++) {
+                Vector2[] octaveOffsets = new Vector2[noiseData.octaves+1];
+                for (int j = 0; j < noiseData.octaves + 1; j ++) {
                     float octaveOffsetX = prng.Next(-100000, 100000);
                     float octaveOffsetY = prng.Next(-100000, 100000);
                     octaveOffsets[j] = new Vector2(octaveOffsetX, octaveOffsetY);
                 }
 
-                float offSetX = transform.position.x / terrainData.scale * noiseData.frequency;
-                float offSetZ = transform.position.z / terrainData.scale * noiseData.frequency;
+                float offSetX = transform.position.x / terrainData.scale * newFrequency;
+                float offSetZ = transform.position.z / terrainData.scale * newFrequency;
 
                 float landMassOffSetX = (transform.position.x * noiseData.landMassFrequency) / terrainData.scale;
                 float landMassOffSetZ = (transform.position.z * noiseData.landMassFrequency) / terrainData.scale;
@@ -253,18 +253,19 @@ public class TerrainGenerator : MonoBehaviour {
                         heightMapValue += newHeightMapValue;
                     }
                 };
-                // Continent Script 
-                // float continentValue = Mathf.PerlinNoise(x * noiseData.landMassFrequency + (newLandMassSeed - (-landMassOffSetX)), z * noiseData.landMassFrequency + (newLandMassSeed - (-landMassOffSetZ)));
-                // continentValue = terrainData.landMassHeightCurve.Evaluate(continentValue);
-                // continentValue = continentValue * 2 -1; // Centering around Zero.
-                // continentValue = continentValue * noiseData.landMassAmplitude;
-                // heightMapValue += continentValue;
+                if (ContinentMap) {
+                    float continentValue = Mathf.PerlinNoise((x + octaveOffsets[noiseData.octaves-1].x) * noiseData.landMassFrequency + landMassOffSetX, (z + octaveOffsets[noiseData.octaves-1].y) * noiseData.landMassFrequency + landMassOffSetZ);
+                    continentValue = terrainData.landMassHeightCurve.Evaluate(continentValue);
+                    continentValue = continentValue * 2 -1; // Centering around Zero.
+                    continentValue = continentValue * noiseData.landMassAmplitude;
+                    heightMapValue += continentValue;
+                }
                 
                 heightMap[i] = new Vector3(x, heightMapValue, z);
                 
-                if (chunkName == "Terrain Chunk0") {
-                    textureMap[x,z] = heightMapValue;
-                }
+                // if (chunkName == "Terrain Chunk0") {
+                //     textureMap[x,z] = heightMapValue;
+                // }
                 
                 // HeatMap Generation
                 float heatMapValue = Mathf.PerlinNoise(x * noiseData.heatMapFrequency + (noiseData.seedHeat - (-heatMapOffSetX)), z * noiseData.heatMapFrequency + (noiseData.seedHeat - (-heatMapOffSetZ)));

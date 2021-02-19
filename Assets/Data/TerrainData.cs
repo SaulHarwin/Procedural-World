@@ -4,6 +4,7 @@ using UnityEngine;
 
 [CreateAssetMenu()]
 public class TerrainData : ScriptableObject {
+    public bool waterVisible;
     public LODInfo[] resolutionLevels;
     public Gradient gradient;
     public int scale = 1;

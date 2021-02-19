@@ -93,12 +93,14 @@ void UpdateVisibleChunks(float maxViewDst) {
             terrainObject.transform.position = positionV3;
             terrainObject.name = "Terrain Chunk" + countTag.ToString();
             
-            waterClone = GameObject.Find("Water");
-            waterObject = Instantiate (waterClone, positionV3, Quaternion.identity);
-            waterObject.transform.localScale = new Vector3(terrainData.scale*2, 1, terrainData.scale*2);
-            waterObject.transform.parent = GameObject.Find("Terrain Chunks").transform;
-            waterObject.transform.position = positionV3;
-            waterObject.name = "Water Chunk" + countTag.ToString();
+            if (terrainData.waterVisible) {
+                waterClone = GameObject.Find("Water");
+                waterObject = Instantiate (waterClone, positionV3, Quaternion.identity);
+                waterObject.transform.localScale = new Vector3(terrainData.scale*2, 1, terrainData.scale*2);
+                waterObject.transform.parent = GameObject.Find("Terrain Chunks").transform;
+                waterObject.transform.position = positionV3;
+                waterObject.name = "Water Chunk" + countTag.ToString();
+            }
             
             SetVisible(false);
         }
@@ -126,7 +128,10 @@ void UpdateVisibleChunks(float maxViewDst) {
 
         public void SetVisible(bool visible) {
             terrainObject.SetActive(visible);
-            waterObject.SetActive(visible);
+            try {
+                waterObject.SetActive(visible);
+            }
+            catch {}
         }
 
         public bool isVisible() {
