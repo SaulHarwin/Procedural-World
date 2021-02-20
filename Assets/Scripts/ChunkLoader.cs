@@ -36,7 +36,7 @@ public class ChunkLoader : MonoBehaviour {
         }
     }
 
-void UpdateVisibleChunks(float maxViewDst) {
+    void UpdateVisibleChunks(float maxViewDst) {
         for ( int i = 0; i < terrainChunksVisibleLastUpdate.Count; i++) {
             terrainChunksVisibleLastUpdate[i].SetVisible(false);
         }
@@ -101,8 +101,6 @@ void UpdateVisibleChunks(float maxViewDst) {
                 waterObject.transform.position = positionV3;
                 waterObject.name = "Water Chunk" + countTag.ToString();
             }
-            
-            SetVisible(false);
         }
 
         public int UpdateTerrainChunk(int size, float maxViewDst, TerrainData terrainData, int resolution) {
