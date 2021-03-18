@@ -25,7 +25,6 @@ public class TerrainGenerator : MonoBehaviour {
     Vector3[] heightMap;
     Vector3[] heatMap;
     Vector3[] moistureMap;
-    // Vector3[] Maps;
     int[] triangles; 
     Color[] colours;
     Texture[] textures;
@@ -213,7 +212,7 @@ public class TerrainGenerator : MonoBehaviour {
             for (int x = 0; x <= terrainData.chunkSize; x += resolutionDevisionNum) {
                 
                 float newAmplitude = noiseData.amplitude;
-                float newFrequency = noiseData.frequency * terrainData.scale;
+                float newFrequency = noiseData.frequency;
                 float normalization = 0;
                 int newSeed = noiseData.seed;
                 int newLandMassSeed = noiseData.seedLandMass;

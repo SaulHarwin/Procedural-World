@@ -88,7 +88,7 @@ public class ChunkLoader : MonoBehaviour {
             
             terrainClone = GameObject.Find("Terrain");
             terrainObject = Instantiate (terrainClone, positionV3, Quaternion.identity);
-            terrainObject.transform.localScale = new Vector3(terrainData.scale, 1, terrainData.scale);
+            terrainObject.transform.localScale = new Vector3(terrainData.scale, terrainData.scale, terrainData.scale);
             terrainObject.transform.parent = GameObject.Find("Terrain Chunks").transform;
             terrainObject.transform.position = positionV3;
             terrainObject.name = "Terrain Chunk" + countTag.ToString();
