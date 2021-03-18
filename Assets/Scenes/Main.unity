@@ -970,6 +970,10 @@ MonoBehaviour:
   noiseData: {fileID: 11400000, guid: 01e2b8d2ad757ce45ac47f6977014b53, type: 2}
   terrainData: {fileID: 11400000, guid: 4cedd16cddfc2774c9106d0e7d8b47f8, type: 2}
   treeData: {fileID: 11400000, guid: 6c854e8680bb82d45bc59943e810c8f4, type: 2}
+  graphicQuality: 2
+  lowResolution: {fileID: 11400000, guid: 7c47a9c9c4033f84fbe78290bc63027a, type: 2}
+  mediumResolution: {fileID: 11400000, guid: 108ddb6c44b7b4545a6fcc484b082f04, type: 2}
+  highResolution: {fileID: 11400000, guid: f953534fff8f68a48b3eb8f38c78ffc6, type: 2}
   TexturePreview: {fileID: 1337788839}
   heightTerrainTypes:
   - name: Lowest

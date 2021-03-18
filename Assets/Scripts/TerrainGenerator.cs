@@ -31,6 +31,12 @@ public class TerrainGenerator : MonoBehaviour {
     public TerrainData terrainData;
     public TreeData treeData;
 
+    [SerializeField] private GraphicQuality graphicQuality;
+    enum GraphicQuality {Low, Medium, High}
+    public ResolutionData lowResolution;
+    public ResolutionData mediumResolution;
+    public ResolutionData highResolution;
+
     public GameObject TexturePreview;
 
     [SerializeField] private TerrainType[] heightTerrainTypes;
@@ -39,7 +45,20 @@ public class TerrainGenerator : MonoBehaviour {
     // [SerializeField] private TerrainType[] biomeTerrainTypes;
 
     public void Startup(int LODIndex, string chunkName) {
-        int resolution = terrainData.resolutionLevels[LODIndex].resolution;
+        int resolution = 0;
+        
+        switch (this.graphicQuality) {
+            case GraphicQuality.Low:
+                resolution = lowResolution.resolutionLevels[LODIndex].resolution;
+                break;
+            case GraphicQuality.Medium:
+                resolution = mediumResolution.resolutionLevels[LODIndex].resolution;
+                break;
+            case GraphicQuality.High:
+                resolution = highResolution.resolutionLevels[LODIndex].resolution;
+                break;
+        }
+
         int resolutionDevisionNum = (resolution == 1)?1:resolution*2;
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
