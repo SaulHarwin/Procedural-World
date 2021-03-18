@@ -7,10 +7,6 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter))]
 public class TerrainGenerator : MonoBehaviour {
     public bool ContinentMap;
-    // public float radius;
-	// public Vector2 regionSize = Vector2.one;
-	// public int rejectionSamples;
-	// public float displayRadius;
 
 	List<Vector2> points;
 
@@ -182,7 +178,7 @@ public class TerrainGenerator : MonoBehaviour {
         Maps maps = GenerateheightMap(resolutionDevisionNum, chunkName);
         int[] triangles = GenerateTriangles(resolutionDevisionNum);
         switch (this.visualizationMode) {
-            case VisualizationMode.Shaded:
+            case VisualizationMode.Height:
                 colours = GenerateColours(maps.heightMap, resolutionDevisionNum, maxValue, this.heightTerrainTypes);
                 break;
             case VisualizationMode.Heat:
@@ -309,7 +305,7 @@ public class TerrainGenerator : MonoBehaviour {
         float height;
         for (int i = 0, z = 0; z <= terrainData.chunkSize; z += resolutionDevisionNum) {
             for (int x = 0; x <= terrainData.chunkSize; x += resolutionDevisionNum) {
-                if (this.visualizationMode == VisualizationMode.Shaded) {
+                if (this.visualizationMode == VisualizationMode.Height) {
                     height = Mathf.InverseLerp(0, maxValue, map[i].y);
                 } else {
                     height = Mathf.InverseLerp(0, 1, map[i].y); 
@@ -433,7 +429,7 @@ public class TerrainGenerator : MonoBehaviour {
 	private BiomeRow[] biomes;
 
     [SerializeField] private VisualizationMode visualizationMode;
-    enum VisualizationMode {Shaded, Heat, Moisture, Biomes}
+    enum VisualizationMode {Height, Heat, Moisture, Biomes}
 }
 
 [System.Serializable]
