@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90dd337804153fd4eb00ed2d50c6c4bc, type: 3}
   m_Name: Default Terrain Values
   m_EditorClassIdentifier: 
-  waterVisible: 0
+  waterVisible: 1
   resolutionLevels:
   - resolution: 1
     visibleChunksDstThreshold: 2
