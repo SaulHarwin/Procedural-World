@@ -966,7 +966,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ContinentMap: 0
-  foliage: 0
+  foliage: 1
   noiseData: {fileID: 11400000, guid: 01e2b8d2ad757ce45ac47f6977014b53, type: 2}
   terrainData: {fileID: 11400000, guid: 4cedd16cddfc2774c9106d0e7d8b47f8, type: 2}
   treeData: {fileID: 11400000, guid: 6c854e8680bb82d45bc59943e810c8f4, type: 2}

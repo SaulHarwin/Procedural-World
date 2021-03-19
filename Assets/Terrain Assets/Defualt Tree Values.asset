@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbe1cf590c367f04d96125cdd924b451, type: 3}
   m_Name: Defualt Tree Values
   m_EditorClassIdentifier: 
-  radius: 80
+  tree: {fileID: 100000, guid: 69f0af3a0a6c73b4ab4b89eb82cdc488, type: 3}
+  radius: 10
   displayRadius: 1
-  regionSize: {x: 240, y: 240}
+  regionSize: {x: 120, y: 120}
   rejectionSamples: 4

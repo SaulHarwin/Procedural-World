@@ -113,7 +113,7 @@ public class TerrainGenerator : MonoBehaviour {
                     if (x < treeDensity) {
                         p = FindY(i, j, k, p);
                         if (p.y > maxValue / 8) { // If the tree will be under water then don't place it.  
-                            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                            GameObject cube = Instantiate(treeData.tree);
                             cube.transform.parent = transform;
                             cube.transform.localScale = new Vector3(treeData.displayRadius / terrainData.scale, 5 * treeData.displayRadius, treeData.displayRadius / terrainData.scale);
                             cube.transform.position = new Vector3(transform.position.x + p.x * terrainData.scale, transform.position.y + p.y, transform.position.z + p.z * terrainData.scale);
@@ -134,6 +134,9 @@ public class TerrainGenerator : MonoBehaviour {
             }
         }
         colours = new Color[heatMap.Length];
+        Debug.Log(heightMap.Length);
+        Debug.Log(heatMap.Length);
+
         float heat = Mathf.InverseLerp(0, 1, heatMap[i].y);
         float moisture = Mathf.InverseLerp(0, 1, moistureMap[i].y);  
         // BiomeRow[] heatType = ChooseBiomeType (heat, biomes);
