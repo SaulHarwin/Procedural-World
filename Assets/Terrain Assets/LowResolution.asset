@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: LowResolution
   m_EditorClassIdentifier: 
   resolutionLevels:
-  - resolution: 8
+  - resolution: 4
     visibleChunksDstThreshold: 2
-  - resolution: 10
+  - resolution: 6
     visibleChunksDstThreshold: 3
-  - resolution: 15
+  - resolution: 10
     visibleChunksDstThreshold: 4
-  - resolution: 40
+  - resolution: 15
     visibleChunksDstThreshold: 5
-  - resolution: 60
+  - resolution: 30
     visibleChunksDstThreshold: 10
-  - resolution: 120
+  - resolution: 60
     visibleChunksDstThreshold: 1000

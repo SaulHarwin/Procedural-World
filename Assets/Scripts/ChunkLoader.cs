@@ -8,6 +8,8 @@ public class ChunkLoader : MonoBehaviour {
     
     public TerrainData terrainData;
     public NoiseData noiseData;
+    private ResolutionData resolutionData;
+
 
     const float playerMoveThresholdForChunkUpdate = 25f;
     const float sqrPlayerMoveThresholdForChunkUpdate = playerMoveThresholdForChunkUpdate * playerMoveThresholdForChunkUpdate; 
@@ -22,6 +24,18 @@ public class ChunkLoader : MonoBehaviour {
     List<TerrainChunk> terrainChunksVisibleLastUpdate = new List<TerrainChunk>();
 
     void Start() {
+        switch (terrainData.graphicQuality) {
+            case TerrainData.GraphicQuality.Low:
+                resolutionData = terrainData.lowResolution;
+                break;
+            case TerrainData.GraphicQuality.Medium:
+                resolutionData = terrainData.mediumResolution;
+                break;
+            case TerrainData.GraphicQuality.High:
+                resolutionData = terrainData.highResolution;
+                break;
+        }
+
         float maxViewDst = terrainData.maxViewDst * terrainData.chunkSize * terrainData.scale;
         chunksVisibleInViewDst = terrainData.maxViewDst;
         UpdateVisibleChunks(maxViewDst);
@@ -51,7 +65,7 @@ public class ChunkLoader : MonoBehaviour {
 
                 if (terrainChunkDictionary.ContainsKey (viewedChunkCoord)) {
                     int resolution = resolutionDictionary[viewedChunkCoord]; // Resolution = the current resolution the chunk has.
-                    int newResolution = terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk(terrainData.chunkSize, maxViewDst, terrainData, resolution);
+                    int newResolution = terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk(terrainData.chunkSize, maxViewDst, terrainData, resolutionData, resolution);
                     resolutionDictionary[viewedChunkCoord] = newResolution; // Update the value for the chunks resolution.
                     if (terrainChunkDictionary[viewedChunkCoord].isVisible()) {
                         terrainChunksVisibleLastUpdate.Add(terrainChunkDictionary[viewedChunkCoord]);
@@ -66,6 +80,7 @@ public class ChunkLoader : MonoBehaviour {
     }
 
     public class TerrainChunk {
+        ResolutionData resolutionData;
         TerrainData terrainData;
         NoiseData noiseData;
         GameObject terrainClone;
@@ -103,25 +118,25 @@ public class ChunkLoader : MonoBehaviour {
             }
         }
 
-        public int UpdateTerrainChunk(int size, float maxViewDst, TerrainData terrainData, int resolution) {
+        public int UpdateTerrainChunk(int size, float maxViewDst, TerrainData terrainData, ResolutionData resolutionData, int resolution) {
             float playerDstFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(playerPosition));
             float playerChunkDstFromNearestEdge = playerDstFromNearestEdge / (terrainData.chunkSize * terrainData.scale);
             bool visible = playerDstFromNearestEdge <= maxViewDst;
 
             int LODIndex = 0;
             
-            for (int i = 0; i < terrainData.resolutionLevels.Length - 1; i ++) {
-                if (playerChunkDstFromNearestEdge > terrainData.resolutionLevels[i].visibleChunksDstThreshold) {
+            for (int i = 0; i < resolutionData.resolutionLevels.Length - 1; i ++) {
+                if (playerChunkDstFromNearestEdge > resolutionData.resolutionLevels[i].visibleChunksDstThreshold) {
                     LODIndex = i + 1;
                 } else {
                     break;
                 }
             } 
-            if (resolution != terrainData.resolutionLevels[LODIndex].resolution) { // Regenerate the chunks mesh only if the resolution of the chunk has changed.
+            if (resolution != resolutionData.resolutionLevels[LODIndex].resolution) { // Regenerate the chunks mesh only if the resolution of the chunk has changed.
                 terrainObject.GetComponent<TerrainGenerator>().Startup(LODIndex, terrainObject.name);
             } 
             SetVisible(visible);
-            return terrainData.resolutionLevels[LODIndex].resolution; // Return the resolution of the chunk.
+            return resolutionData.resolutionLevels[LODIndex].resolution; // Return the resolution of the chunk.
         }
 
         public void SetVisible(bool visible) {

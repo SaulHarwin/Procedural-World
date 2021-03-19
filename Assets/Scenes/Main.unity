@@ -568,7 +568,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh16934
+  m_Name: pb_Mesh16686
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -970,10 +970,6 @@ MonoBehaviour:
   noiseData: {fileID: 11400000, guid: 01e2b8d2ad757ce45ac47f6977014b53, type: 2}
   terrainData: {fileID: 11400000, guid: 4cedd16cddfc2774c9106d0e7d8b47f8, type: 2}
   treeData: {fileID: 11400000, guid: 6c854e8680bb82d45bc59943e810c8f4, type: 2}
-  graphicQuality: 2
-  lowResolution: {fileID: 11400000, guid: 7c47a9c9c4033f84fbe78290bc63027a, type: 2}
-  mediumResolution: {fileID: 11400000, guid: 108ddb6c44b7b4545a6fcc484b082f04, type: 2}
-  highResolution: {fileID: 11400000, guid: f953534fff8f68a48b3eb8f38c78ffc6, type: 2}
   TexturePreview: {fileID: 1337788839}
   heightTerrainTypes:
   - name: Lowest
@@ -1138,7 +1134,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a19832a8f67f19d41bb476165365c057, type: 2}
+  - {fileID: 2100000, guid: 955f2b1fb0e195b418e0566dc17d2024, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -13,19 +13,6 @@ MonoBehaviour:
   m_Name: Default Terrain Values
   m_EditorClassIdentifier: 
   waterVisible: 0
-  resolutionLevels:
-  - resolution: 1
-    visibleChunksDstThreshold: 2
-  - resolution: 4
-    visibleChunksDstThreshold: 4
-  - resolution: 8
-    visibleChunksDstThreshold: 8
-  - resolution: 15
-    visibleChunksDstThreshold: 16
-  - resolution: 40
-    visibleChunksDstThreshold: 32
-  - resolution: 60
-    visibleChunksDstThreshold: 1000
   gradient:
     serializedVersion: 2
     key0: {r: 0.9811321, g: 0.9257488, b: 0.6525454, a: 1}
@@ -56,8 +43,8 @@ MonoBehaviour:
     m_NumColorKeys: 5
     m_NumAlphaKeys: 2
   scale: 1
-  chunkSize: 240
-  maxViewDst: 20
+  chunkSize: 120
+  maxViewDst: 50
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:
@@ -160,3 +147,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  graphicQuality: 0
+  lowResolution: {fileID: 11400000, guid: 7c47a9c9c4033f84fbe78290bc63027a, type: 2}
+  mediumResolution: {fileID: 11400000, guid: 108ddb6c44b7b4545a6fcc484b082f04, type: 2}
+  highResolution: {fileID: 11400000, guid: f953534fff8f68a48b3eb8f38c78ffc6, type: 2}

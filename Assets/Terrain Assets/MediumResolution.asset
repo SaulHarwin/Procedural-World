@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: MediumResolution
   m_EditorClassIdentifier: 
   resolutionLevels:
-  - resolution: 4
+  - resolution: 2
     visibleChunksDstThreshold: 1
-  - resolution: 6
+  - resolution: 4
     visibleChunksDstThreshold: 2
-  - resolution: 8
+  - resolution: 10
     visibleChunksDstThreshold: 4
   - resolution: 15
     visibleChunksDstThreshold: 8
-  - resolution: 40
+  - resolution: 30
     visibleChunksDstThreshold: 16
   - resolution: 60
     visibleChunksDstThreshold: 1000

@@ -5,7 +5,6 @@ using UnityEngine;
 [CreateAssetMenu()]
 public class TerrainData : ScriptableObject {
     public bool waterVisible;
-    public LODInfo[] resolutionLevels;
     public Gradient gradient;
     public int scale = 1;
     public int chunkSize = 240;
@@ -13,9 +12,11 @@ public class TerrainData : ScriptableObject {
     public AnimationCurve meshHeightCurve;
     public AnimationCurve landMassHeightCurve;
 
-    [System.Serializable]
-    public struct LODInfo {
-        public int resolution;
-        public float visibleChunksDstThreshold;
-    }
+
+    [SerializeField] public GraphicQuality graphicQuality;
+    public enum GraphicQuality {Low, Medium, High}
+
+    public ResolutionData lowResolution;
+    public ResolutionData mediumResolution;
+    public ResolutionData highResolution;
 }
