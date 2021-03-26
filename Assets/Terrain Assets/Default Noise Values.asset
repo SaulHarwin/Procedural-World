@@ -17,7 +17,7 @@ MonoBehaviour:
   seedHeat: 10144
   seedMoisture: 451
   octaves: 6
-  mapScale: 0
+  mapScale: 1
   amplitude: 1000
   frequency: 0.0004
   lacinarity: 2

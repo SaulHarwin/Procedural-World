@@ -368,6 +368,7 @@ public class TerrainGenerator : MonoBehaviour {
                 return terrainType;
             }
         }
+        print(terrainTypes.Length);
         return terrainTypes [terrainTypes.Length - 1];
     }
 
